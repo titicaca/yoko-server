@@ -15,7 +15,9 @@ public class SponsorController {
 		Sponsor sponsor = new Sponsor();
 		sponsor.setName(postclass.getName());
 		sponsor.setCard(postclass.getCard());
-		sponsor.setStatus(1);
+		sponsor.setMobile(postclass.getMobile());
+		sponsor.setAddress(postclass.getAddress());
+		sponsor.setPicturelink(postclass.getPicturelink());
 		return sponsor;
 	}
 	

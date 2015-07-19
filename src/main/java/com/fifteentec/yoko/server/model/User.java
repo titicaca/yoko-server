@@ -8,6 +8,7 @@ package com.fifteentec.yoko.server.model;
 
 
 public class User extends BaseModel{
+	private int id;
 	private String mobile;  
     private String username;
     private String password;
@@ -15,6 +16,14 @@ public class User extends BaseModel{
     public User(){
     	
     }
+    
+    public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
     
     public String getMobile() {  
         return mobile;  

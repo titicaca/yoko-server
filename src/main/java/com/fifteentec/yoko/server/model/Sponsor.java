@@ -1,11 +1,20 @@
 package com.fifteentec.yoko.server.model;
 
 public class Sponsor extends BaseModel{
+	private int id;
 	private String name;
 	private String card;
 	private String mobile;
 	private String Address;
 	private String picturelink;
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	public String getName() {
 		return name;

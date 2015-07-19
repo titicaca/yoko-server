@@ -1,9 +1,18 @@
 package com.fifteentec.yoko.server.model;
 
-public class NewFriend {
+public class NewFriend extends BaseModel{
+	private int id;
 	private int user_id1;
 	private int user_id2;
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public int getUser_id1() {
 		return user_id1;
 	}

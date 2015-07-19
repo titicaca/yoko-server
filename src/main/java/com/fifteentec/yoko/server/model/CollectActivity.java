@@ -1,8 +1,17 @@
 package com.fifteentec.yoko.server.model;
 
-public class CollectActivity {
+public class CollectActivity extends BaseModel{
+	private int id;
 	private int user_id;
 	private int activity_id;
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	public int getUser_id() {
 		return user_id;

@@ -1,10 +1,19 @@
 package com.fifteentec.yoko.server.model;
 
 public class Invitation extends BaseModel {
+	private int id;
 	private int appointment_id;
 	private int user_id;
 	private int friend_id;
 	private int type;
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	public int getAppointment_id() {
 		return appointment_id;

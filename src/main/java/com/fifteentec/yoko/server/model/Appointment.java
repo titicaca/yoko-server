@@ -1,17 +1,25 @@
 package com.fifteentec.yoko.server.model;
 
 
-public class Appointment {
+public class Appointment extends BaseModel{
+	private int id;
 	private String name;
-	private int activitygroup_id;
+	private int appointment_id;
 	private String timebegin;
 	private String timeend;
 	private String location;
 	private String introduction;
-	private int peopleenroll;
 	private int peopleall;
 	private String picturelink;
 	private String detaillink;
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -21,12 +29,12 @@ public class Appointment {
 		this.name = name;
 	}
 
-	public int getActivitygroup_id() {
-		return activitygroup_id;
+	public int getAppointment_id() {
+		return appointment_id;
 	}
 
-	public void setActivitygroup_id(int activitygroup_id) {
-		this.activitygroup_id = activitygroup_id;
+	public void setAppointment_id(int appointment_id) {
+		this.appointment_id = appointment_id;
 	}
 
 	public String getTimebegin() {
@@ -59,14 +67,6 @@ public class Appointment {
 
 	public void setIntroduction(String introduction) {
 		this.introduction = introduction;
-	}
-
-	public int getPeopleenroll() {
-		return peopleenroll;
-	}
-
-	public void setPeopleenroll(int peopleenroll) {
-		this.peopleenroll = peopleenroll;
 	}
 
 	public int getPeopleall() {

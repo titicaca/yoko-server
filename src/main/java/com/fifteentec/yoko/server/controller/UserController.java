@@ -9,8 +9,6 @@ package com.fifteentec.yoko.server.controller;
 
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.web.bind.annotation.*;
-
-//import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fifteentec.yoko.server.model.*;
 
 @RestController  
@@ -25,19 +23,11 @@ public class UserController {
 	    
 		return user;  
     } 
-	@RequestMapping(value="/{id}",method=RequestMethod.POST)  
-    public User postUser(@PathVariable("id") Long id,@RequestBody User myuser) {  
-		User user = new User();  
-		user.setMobile(myuser.getMobile());  
-        user.setUsername(myuser.getUsername()); 
-        return user;
-	}
-	
 	@RequestMapping(method=RequestMethod.POST)  
     public User addUser(@RequestBody User postclass) {  
-		User user = new User();  
-		user.setMobile(postclass.getMobile());  
+		User user = new User();    
         user.setUsername(postclass.getUsername()); 
+		user.setMobile(postclass.getMobile());
         user.setPassword(postclass.getPassword());
         return user;
 	}

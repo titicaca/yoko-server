@@ -1,6 +1,7 @@
 package com.fifteentec.yoko.server.model;
 
 public class Schedule extends BaseModel{
+	private int id;
 	private int user_id;
 	private String timebegin;
 	private String timeend;
@@ -14,6 +15,14 @@ public class Schedule extends BaseModel{
 	
 	public Schedule(){
 		
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getUser_id() {

@@ -1,10 +1,7 @@
 package com.fifteentec.yoko.server.controller;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fifteentec.yoko.server.model.ActivityGroup;
 
@@ -17,9 +14,9 @@ public class ActivityGroupController {
 	public ActivityGroup addActivityGroup(@RequestBody ActivityGroup postclass){
 		ActivityGroup activitygroup = new ActivityGroup();
 		activitygroup.setName(postclass.getName());
+		activitygroup.setType(postclass.getType());
 		activitygroup.setSponsor_id(postclass.getSponsor_id());
 		activitygroup.setIntroduction(postclass.getIntroduction());
-		
 		return activitygroup;
 	}
 	

@@ -1,9 +1,13 @@
 package com.fifteentec.yoko.server.model;
 
-public class EnrollActivity  extends BaseModel{
+public class ActivityPeople {
 	private int id;
-	private int user_id;
 	private int activity_id;
+	private int peopleenroll;
+	
+	public ActivityPeople(){
+		
+	}
 
 	public int getId() {
 		return id;
@@ -11,14 +15,6 @@ public class EnrollActivity  extends BaseModel{
 
 	public void setId(int id) {
 		this.id = id;
-	}
-	
-	public int getUser_id() {
-		return user_id;
-	}
-
-	public void setUser_id(int user_id) {
-		this.user_id = user_id;
 	}
 
 	public int getActivity_id() {
@@ -28,5 +24,14 @@ public class EnrollActivity  extends BaseModel{
 	public void setActivity_id(int activity_id) {
 		this.activity_id = activity_id;
 	}
+
+	public int getPeopleenroll() {
+		return peopleenroll;
+	}
+
+	public void setPeopleenroll(int peopleenroll) {
+		this.peopleenroll = peopleenroll;
+	}
+
 	
 }
