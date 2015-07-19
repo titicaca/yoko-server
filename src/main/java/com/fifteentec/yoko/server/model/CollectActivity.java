@@ -1,8 +1,21 @@
 package com.fifteentec.yoko.server.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="CollectActivity")
 public class CollectActivity extends BaseModel{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+	@Column(name="user_id")
 	private int user_id;
+	@Column(name="activity_id")
 	private int activity_id;
 	
 	public int getId() {

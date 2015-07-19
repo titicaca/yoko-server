@@ -1,10 +1,25 @@
 package com.fifteentec.yoko.server.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="Invitation")
 public class Invitation extends BaseModel {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+	@Column(name="appoint_id")
 	private int appointment_id;
+	@Column(name="user_id")
 	private int user_id;
+	@Column(name="friend_id")
 	private int friend_id;
+	@Column(name="type")
 	private int type;
 	
 	public int getId() {

@@ -15,7 +15,7 @@ public class ActivityGroupController {
 		ActivityGroup activitygroup = new ActivityGroup();
 		activitygroup.setName(postclass.getName());
 		activitygroup.setType(postclass.getType());
-		activitygroup.setSponsor_id(postclass.getSponsor_id());
+		activitygroup.setSponsor(postclass.getSponsor());
 		activitygroup.setIntroduction(postclass.getIntroduction());
 		return activitygroup;
 	}
@@ -24,7 +24,7 @@ public class ActivityGroupController {
 	public ActivityGroup updateActivityGroup(@RequestBody ActivityGroup putclass){
 		ActivityGroup activitygroup = new ActivityGroup();
 		activitygroup.setName(putclass.getName());
-		activitygroup.setSponsor_id(putclass.getSponsor_id());
+		activitygroup.setSponsor(putclass.getSponsor());
 		activitygroup.setIntroduction(putclass.getIntroduction());
 		
 		return activitygroup;

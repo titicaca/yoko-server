@@ -1,33 +1,63 @@
 package com.fifteentec.yoko.server.model;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "UserInfo")
 public class UserInfo extends BaseModel{
-	private int id;
-	private int user_id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	@OneToOne(cascade=CascadeType.ALL,mappedBy="UserInfo")
+	private User user;
+	
+//	private Long user_id;
+	@Column(name="sex")
 	private int sex; 
+	@Column(name="email")
     private String email;
+	@Column(name="qq")
     private String qq;
+	@Column(name="wechat")
     private String wechat;
+	@Column(name="weibo")
     private String weibo;
+	@Column(name="picturelink")
     private String picturelink;
     
     public UserInfo(){
     	
     }
     
-    public int getId() {
+    public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public int getUser_id() {
-		return user_id;
+//	public Long getUser_id() {
+//		return user_id;
+//	}
+//
+//	public void setUser_id(Long user_id) {
+//		this.user_id = user_id;
+//	}
+	
+	public User getUser(){
+		return user;
 	}
-
-	public void setUser_id(int user_id) {
-		this.user_id = user_id;
+	
+	public void setUser(User u){
+		this.user = u;
 	}
 
 	public int getSex() {

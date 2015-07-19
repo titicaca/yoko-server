@@ -15,7 +15,7 @@ public class ActivityController {
 	public Activity addActivity(@RequestBody Activity postclass){
 		Activity activity = new Activity();
 		activity.setName(postclass.getName());
-		activity.setActivitygroup_id(postclass.getActivitygroup_id());
+		activity.setActivityGroup(postclass.getActivityGroup());
 		activity.setTimebegin(postclass.getTimebegin());
 		activity.setTimeend(postclass.getTimeend());
 		activity.setLocation(postclass.getLocation());

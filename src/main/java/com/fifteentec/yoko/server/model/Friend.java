@@ -1,10 +1,23 @@
 package com.fifteentec.yoko.server.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="Friend")
 public class Friend extends BaseModel{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+	@Column(name="user_id")
 	private int user_id;
+	@Column(name="friend_id")
 	private int friend_id;
+	//TODO shall it be an array?
 	private String tagname;
 
 	public int getId() {

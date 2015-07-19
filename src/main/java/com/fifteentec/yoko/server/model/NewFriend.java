@@ -1,5 +1,7 @@
 package com.fifteentec.yoko.server.model;
 
+//TODO use ORM to define many-to-many relationship
+
 public class NewFriend extends BaseModel{
 	private int id;
 	private int user_id1;

@@ -1,27 +1,49 @@
 package com.fifteentec.yoko.server.model;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
 /** 
  * BlueSun 
  * 15-07-15 
  * Version 1.0 
  **/ 
 
-
+@Entity
+@Table(name = "Users")
 public class User extends BaseModel{
-	private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	@Version
+	private Long version;
+	@Column(name="mobile")
 	private String mobile;  
+	@Column(name="username")
     private String username;
+	@Column(name="password")
     private String password;
+	@OneToOne(cascade=CascadeType.ALL)
+	private UserInfo userinfo;
+	
+//	private UserInfo userinfo;
     
     public User(){
     	
     }
     
-    public int getId() {
+    public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
     

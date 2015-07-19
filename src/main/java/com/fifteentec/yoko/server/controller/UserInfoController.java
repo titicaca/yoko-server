@@ -14,7 +14,7 @@ public class UserInfoController {
 	@RequestMapping(method=RequestMethod.POST)
 	public UserInfo addUserInfo(@RequestBody UserInfo postclass){
 		UserInfo userinfo = new UserInfo();
-		userinfo.setUser_id(postclass.getUser_id());
+		userinfo.setUser(postclass.getUser());
 		userinfo.setSex(postclass.getSex());
 		userinfo.setEmail(postclass.getEmail());
 		userinfo.setQq(postclass.getQq());

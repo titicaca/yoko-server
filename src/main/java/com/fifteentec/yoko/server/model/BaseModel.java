@@ -1,8 +1,9 @@
 package com.fifteentec.yoko.server.model;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
-public class BaseModel {
+public class BaseModel implements Serializable{
 	private String createdtime;
 	private int status;		
 	

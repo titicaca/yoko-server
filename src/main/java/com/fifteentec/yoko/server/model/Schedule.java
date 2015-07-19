@@ -1,16 +1,37 @@
 package com.fifteentec.yoko.server.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="Schedule")
 public class Schedule extends BaseModel{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+	@Column(name="user_id")
 	private int user_id;
+	@Column(name="timebegin",columnDefinition="TIMESTAMP")
 	private String timebegin;
+	@Column(name="timeend",columnDefinition="TIMESTAMP")
 	private String timeend;
+	@Column(name="location")
 	private String location;
+	@Column(name="type")
 	private int type;
+	@Column(name="remind")
 	private int remind;
+	@Column(name="duplication")
 	private int duplication;
+	@Column(name="introduction")
 	private String introduction;
+	@Column(name="property")
 	private int property;
+	@Column(name="detaillink")
 	private String detaillink;
 	
 	public Schedule(){

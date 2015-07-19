@@ -1,11 +1,27 @@
 package com.fifteentec.yoko.server.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="Sponsor")
 public class Sponsor extends BaseModel{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
+	@Column(name="name", nullable=false, unique=true)
 	private String name;
+	@Column(name="card", nullable=false, unique=true)
 	private String card;
+	@Column(name="mobile", nullable=false, unique=true)
 	private String mobile;
+	@Column(name="address")
 	private String Address;
+	@Column(name="picturelink")
 	private String picturelink;
 	
 	public int getId() {
