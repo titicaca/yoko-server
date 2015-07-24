@@ -1,6 +1,9 @@
 package com.fifteentec.yoko.server.repository;
 
 import com.fifteentec.yoko.server.model.Activity;
+
+import java.util.Set;
+
 import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,5 +14,8 @@ import org.springframework.stereotype.Repository;
 @Table(name = "Activity")
 @Qualifier(value = "activityRepository")
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
-	public Activity findByActivityname(String activityname);
+	
+	public Activity findById(Long id);
+	
+	
 }

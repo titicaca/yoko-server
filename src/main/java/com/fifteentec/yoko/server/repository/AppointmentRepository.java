@@ -12,5 +12,7 @@ import org.springframework.stereotype.Repository;
 @Table(name = "Appointment")
 @Qualifier(value = "appointmentRepository")
 public interface AppointmentRepository extends JpaRepository<Appointment, Long>{
+	
+	public Appointment findById(Long id);
 
 }

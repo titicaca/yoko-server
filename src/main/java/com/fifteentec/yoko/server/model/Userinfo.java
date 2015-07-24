@@ -1,38 +1,64 @@
 package com.fifteentec.yoko.server.model;
 
+import java.util.Date;
+
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "UserInfo")
-public class UserInfo extends BaseModel{
+@Table(name = "Userinfo")
+public class Userinfo extends BaseModel{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@OneToOne(cascade=CascadeType.ALL,mappedBy="UserInfo")
-	private User user;
 	
-//	private Long user_id;
 	@Column(name="sex")
 	private int sex; 
+	
 	@Column(name="email")
     private String email;
+	
 	@Column(name="qq")
     private String qq;
+	
 	@Column(name="wechat")
     private String wechat;
+	
 	@Column(name="weibo")
     private String weibo;
+	
 	@Column(name="picturelink")
     private String picturelink;
+	
+	@Basic(optional=false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="createdtime")
+	private Date createdtime = new Date();
+	
+	@Column(name="status",columnDefinition = "INT default 0")
+	private int status;	
+	
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name="user_id",unique=true,nullable=false)
+	@JsonIgnore
+	private User user;
+	
     
-    public UserInfo(){
+    public Userinfo(){
     	
     }
     
@@ -43,21 +69,13 @@ public class UserInfo extends BaseModel{
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-//	public Long getUser_id() {
-//		return user_id;
-//	}
-//
-//	public void setUser_id(Long user_id) {
-//		this.user_id = user_id;
-//	}
 	
 	public User getUser(){
 		return user;
 	}
 	
-	public void setUser(User u){
-		this.user = u;
+	public void setUser(User user){
+		this.user = user;
 	}
 
 	public int getSex() {
@@ -107,5 +125,21 @@ public class UserInfo extends BaseModel{
 	public void setPicturelink(String picturelink) {
 		this.picturelink = picturelink;
 	}
+	
+	public Date getCreatedtime() {
+		return createdtime;
+	}
+
+	public void setCreatedtime(Date createdtime) {
+		this.createdtime = createdtime;
+	}   
+	
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}   
 
 }
