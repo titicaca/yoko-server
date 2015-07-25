@@ -1,6 +1,7 @@
 package com.fifteentec.yoko.server.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -78,23 +79,25 @@ public class Appointment extends BaseModel{
 	@JsonIgnore
 	private User user;
 	
-	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinTable(name="UserEnrollAppointment",
-		joinColumns={@JoinColumn(name="appointment_id")},
-		inverseJoinColumns={@JoinColumn(name="user_id")})
-	@JsonIgnore
-	private Set<User> enrollusers;
-	
-	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinTable(name="AppointmentInviteUser",
-		joinColumns={@JoinColumn(name="appointment_id")},
-		inverseJoinColumns={@JoinColumn(name="user_id")})
-	@JsonIgnore
-	private Set<User> inviteusers;
-	
-//	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="appointment")
+//	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//	@JoinTable(name="UserEnrollAppointment",
+//		joinColumns={@JoinColumn(name="appointment_id")},
+//		inverseJoinColumns={@JoinColumn(name="user_id")})
 //	@JsonIgnore
 //	private Set<User> enrollusers;
+//	
+//	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//	@JoinTable(name="AppointmentInviteUser",
+//		joinColumns={@JoinColumn(name="appointment_id")},
+//		inverseJoinColumns={@JoinColumn(name="user_id")})
+//	@JsonIgnore
+//	private Set<User> inviteusers;
+	
+	
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="appointment")
+	@JsonIgnore
+	private Set<UserAppointmentRelation> userAppointmentRelations;
 	
 	public Long getId() {
 		return id;
@@ -208,22 +211,41 @@ public class Appointment extends BaseModel{
 		this.user = user;
 	}
 
-	public Set<User> getEnrollusers() {
-		return enrollusers;
+	public Set<UserAppointmentRelation> getUserAppointmentRelations() {
+		return userAppointmentRelations;
 	}
 
-	public void setEnrollusers(Set<User> enrollusers) {
-		this.enrollusers = enrollusers;
+	public void setUserAppointmentRelations(Set<UserAppointmentRelation> userAppointmentRelations) {
+		this.userAppointmentRelations = userAppointmentRelations;
 	}
 
-	public Set<User> getInviteusers() {
-		return inviteusers;
-	}
-
-	public void setInviteusers(Set<User> inviteusers) {
-		this.inviteusers = inviteusers;
-	}   
 	
+	public Set<User> findUsersByUserAppointmentRelations(){
+		Set<User> users = new HashSet<User>();
+		for (UserAppointmentRelation r : userAppointmentRelations) {
+			users.add(r.getUser());
+		}
+		return users;
+		
+	}
+
+
+//	public Set<User> getEnrollusers() {
+//		return enrollusers;
+//	}
+//
+//	public void setEnrollusers(Set<User> enrollusers) {
+//		this.enrollusers = enrollusers;
+//	}
+
+//	public Set<User> getInviteusers() {
+//		return inviteusers;
+//	}
+//
+//	public void setInviteusers(Set<User> inviteusers) {
+//		this.inviteusers = inviteusers;
+//	}   
+//	
 	
 	
 }

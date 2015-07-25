@@ -1,6 +1,7 @@
 package com.fifteentec.yoko.server.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -71,10 +72,6 @@ public class User extends BaseModel{
 	@JsonIgnore 
 	private Set<Appointment> appointments ;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="user")
-	@JsonIgnore 
-	private Set<Tag> tags ;
-	
 	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)  
 	@JoinTable(name="UserCollectActivity",
 		joinColumns={@JoinColumn(name="user_id")},
@@ -96,38 +93,48 @@ public class User extends BaseModel{
 	@JsonIgnore
 	private Set<Organization> organizations;
 	
-	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinTable(name="UserEnrollAppointment",
-		joinColumns={@JoinColumn(name="user_id")},
-		inverseJoinColumns={@JoinColumn(name="appointment_id")})
-	@JsonIgnore 
-	private Set<Appointment> enrollappointments;
-	
-	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinTable(name="AppointmentInviteUser",
-		joinColumns={@JoinColumn(name="user_id")},
-		inverseJoinColumns={@JoinColumn(name="appointment_id")})
-	@JsonIgnore 
-	private Set<Appointment> inviteappointments;
-	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JsonIgnore 
-	private Set<User> addfriends;
-	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JsonIgnore 
-	private Set<User> friends;
-	
-	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinTable(name="TagAddFriend",
-		joinColumns={@JoinColumn(name="friend_id")},
-		inverseJoinColumns={@JoinColumn(name="tag_id")})
-	@JsonIgnore 
-	private Set<Tag> Tags;
-	
-//	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="user")
-//	@JsonIgnore
+//	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//	@JoinTable(name="UserEnrollAppointment",
+//		joinColumns={@JoinColumn(name="user_id")},
+//		inverseJoinColumns={@JoinColumn(name="appointment_id")})
+//	@JsonIgnore 
 //	private Set<Appointment> enrollappointments;
+	
+//	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//	@JoinTable(name="AppointmentInviteUser",
+//		joinColumns={@JoinColumn(name="user_id")},
+//		inverseJoinColumns={@JoinColumn(name="appointment_id")})
+//	@JsonIgnore 
+//	private Set<Appointment> inviteappointments;
+	
+//	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//	@JoinTable(name="UserAddFriend")
+//	@JsonIgnore 
+//	private Set<User> addfriends;
+	
+//	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+//	@JsonIgnore 
+//	private Set<User> friends;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="user")
+	@JsonIgnore
+	private Set<UserAppointmentRelation> userAppointmentRelations;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="user")
+	@JsonIgnore
+	private Set<UserFriendRelation> userFriendRelations;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="friend")
+	@JsonIgnore
+	private Set<UserFriendRelation> friendUserRelations;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="user")
+	@JsonIgnore
+	private Set<UserRequestFriend> userRequestFriends;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="friend")
+	@JsonIgnore
+	private Set<UserFriendRelation> friendUserRequest;
 //	
 //	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 //	@JoinTable(name="EnrollAppointment",
@@ -237,45 +244,73 @@ public class User extends BaseModel{
 		this.appointments = appointments;
 	}
 
-	public Set<Appointment> getEnrollappointments() {
-		return enrollappointments;
+//	public Set<Appointment> getEnrollappointments() {
+//		return enrollappointments;
+//	}
+//
+//	public void setEnrollappointments(Set<Appointment> enrollappointments) {
+//		this.enrollappointments = enrollappointments;
+//	}
+
+//	public Set<Appointment> getInviteappointments() {
+//		return inviteappointments;
+//	}
+//
+//	public void setInviteappointments(Set<Appointment> inviteappointments) {
+//		this.inviteappointments = inviteappointments;
+//	}
+
+//	public Set<User> getAddfriends() {
+//		return addfriends;
+//	}
+//
+//	public void setAddfriends(Set<User> addfriends) {
+//		this.addfriends = addfriends;
+//	}
+//
+//	public Set<User> getFriends() {
+//		return friends;
+//	}
+//
+//	public void setFriends(Set<User> friends) {
+//		this.friends = friends;
+//	}
+
+	public Set<UserAppointmentRelation> getUserAppointmentRelations() {
+		return userAppointmentRelations;
 	}
 
-	public void setEnrollappointments(Set<Appointment> enrollappointments) {
-		this.enrollappointments = enrollappointments;
+	public void setUserAppointmentRelations(Set<UserAppointmentRelation> userAppointmentRelations) {
+		this.userAppointmentRelations = userAppointmentRelations;
 	}
-
-	public Set<Appointment> getInviteappointments() {
-		return inviteappointments;
+	
+	public Set<Appointment> findAppointmentsByUserAppointmentRelations(){
+		Set<Appointment> appointments = new HashSet<Appointment>();
+		//Set<UserAppointmentRelation> userAppointmentRelations = getUserAppointmentRelations();
+		for (UserAppointmentRelation userAppointmentRelation : userAppointmentRelations) {
+			appointments.add(userAppointmentRelation.getAppointment());
+		}
+		return appointments;
+		
 	}
-
-	public void setInviteappointments(Set<Appointment> inviteappointments) {
-		this.inviteappointments = inviteappointments;
-	}
-
-	public Set<Tag> getTags() {
-		return tags;
-	}
-
-	public void setTags(Set<Tag> tags) {
-		this.tags = tags;
-	}
-
-	public Set<User> getAddfriends() {
-		return addfriends;
-	}
-
-	public void setAddfriends(Set<User> addfriends) {
-		this.addfriends = addfriends;
-	}
-
-	public Set<User> getFriends() {
+	
+	public Set<User> findFriendsByUserRequestFriend(){
+		Set<User> friends = new HashSet<User>();
+		for (UserRequestFriend userRequestFriend : userRequestFriends) {
+			friends.add(userRequestFriend.getFriend());
+		}
 		return friends;
 	}
-
-	public void setFriends(Set<User> friends) {
-		this.friends = friends;
+	
+	public Set<User> findFriendsByUserFriendRelations(){
+		Set<User> friends = new HashSet<User>();
+		for (UserFriendRelation userFriendRelation : userFriendRelations) {
+			friends.add(userFriendRelation.getFriend());
+		}
+		return friends;
 	}
-
+	
+	
+	
 	
 }

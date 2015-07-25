@@ -5,7 +5,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
 import com.fifteentec.yoko.server.model.*;
+import com.fifteentec.yoko.server.repository.UserFriendRelationRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
+import com.fifteentec.yoko.server.repository.UserRequestFriendRepository;
 
 @RestController  
 @RequestMapping("/friend")  
@@ -15,13 +17,19 @@ public class FriendController {
 	
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	UserRequestFriendRepository userRequestFriendRepository;
+	@Autowired
+	UserFriendRelationRepository userFriendRelationRepository;
 	
 	@RequestMapping(value="add",method=RequestMethod.POST)
-	public Result addUserInviteFriend(@RequestBody UserAndFriend postclass){
-		User user = userRepository.findById(postclass.getUser_id());
+	public Result addUserRequestFriend(@RequestBody UserAndFriend postclass){
+		if(userRequestFriendRepository.findByUser_idAndFriend_id(postclass.getUser_id(), postclass.getFriend_id())!=null) return new Result(false);
+		UserRequestFriend userRequestFriend = new UserRequestFriend();
 		try{
-			user.getAddfriends().add(userRepository.findById(postclass.getFriend_id()));
-			userRepository.save(user);
+			userRequestFriend.setUser(userRepository.findById(postclass.getUser_id()));
+			userRequestFriend.setFriend(userRepository.findById(postclass.getFriend_id()));
+			userRequestFriendRepository.save(userRequestFriend);
 		}
 		catch(Exception e){
 			return new Result(false);
@@ -29,25 +37,33 @@ public class FriendController {
 		return new Result(true);
 	}
 	
-	@RequestMapping(value="response",method=RequestMethod.POST)
-	public Result addUserFriend(@RequestBody UserAndFriend postclass){
-		User user = userRepository.findById(postclass.getUser_id());
+	@RequestMapping(value="response",method=RequestMethod.PUT)
+	public Result updateUserRequestFriend(@RequestBody UserAndFriend postclass){
+		UserRequestFriend userRequestFriend = userRequestFriendRepository.findByUser_idAndFriend_id(postclass.getUser_id(), postclass.getFriend_id());
+		UserFriendRelation userFriendRelation = new UserFriendRelation();
 		try{
-			user.getFriends().add(userRepository.findById(postclass.getFriend_id()));
-			userRepository.save(user);
+		//	if(userRequestFriend == null) return new Result(false);
+
+			
+			
 		}
 		catch(Exception e){
 			return new Result(false);
 		}
+		
+		userRequestFriendRepository.delete(userRequestFriend);
+		userFriendRelation.setUser(userRepository.findById(postclass.getUser_id()));
+		userFriendRelation.setFriend(userRepository.findById(postclass.getFriend_id()));
+		userFriendRelationRepository.save(userFriendRelation);
+		
 		return new Result(true);
 	}
 	
 	@RequestMapping(value="response",method=RequestMethod.DELETE)
-	public Result delUserInviteFriend(@RequestBody UserAndFriend postclass){
-		User user = userRepository.findById(postclass.getUser_id());
+	public Result delUserRequestFriend(@RequestBody UserAndFriend postclass){
+		UserRequestFriend userRequestFriend = userRequestFriendRepository.findByUser_idAndFriend_id(postclass.getUser_id(), postclass.getFriend_id());
 		try{
-			user.getAddfriends().remove(userRepository.findById(postclass.getFriend_id()));
-			userRepository.save(user);
+			userRequestFriendRepository.delete(userRequestFriend);
 		}
 		catch(Exception e){
 			return new Result(false);
