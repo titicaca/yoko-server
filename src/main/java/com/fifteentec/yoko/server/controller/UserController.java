@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.*;
 import org.springframework.web.bind.annotation.*;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.repository.*;
-
+import com.fifteentec.yoko.server.exception.UserNotFoundException;
 
 @RestController  
 @RequestMapping("/user")  
@@ -23,9 +23,13 @@ public class UserController {
 	private UserRepository userRepository;
 	
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)  
-    public User getUser(@PathVariable("id") Long id) {  
-		User user = userRepository.findById(id);
-		return user;
+    public User getUser(@PathVariable("id") Long id) { 
+		try{
+			User user = userRepository.findById(id);
+			return user;
+		}catch(Exception e){
+			throw new UserNotFoundException(id.toString());
+		}
     } 
 	
 	@RequestMapping(method=RequestMethod.POST)  
@@ -58,4 +62,5 @@ public class UserController {
         }      
         return new Result(true);
 	}
+	
 }
