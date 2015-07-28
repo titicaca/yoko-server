@@ -147,7 +147,12 @@ public class User extends BaseModel{
     	
     }
     
-    public Long getId() {
+    public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
+
+	public Long getId() {
 		return id;
 	}
 
