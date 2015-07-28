@@ -54,10 +54,11 @@ public class OAuth2Configuration {
         public void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
             		.antMatchers("/signup","/about", "/home").permitAll()
-                    .antMatchers("/users").hasRole("ADMIN")
+//                    .antMatchers("/users").hasRole("ADMIN")
 //                    .antMatchers("/review").authenticated()
 //                    .antMatchers("/logreview").authenticated()
                     .antMatchers("/oauth/token").authenticated()
+                    .anyRequest().authenticated()
                     .and()
                     .csrf()
                     .csrfTokenRepository(csrfTokenRepository()).and()
