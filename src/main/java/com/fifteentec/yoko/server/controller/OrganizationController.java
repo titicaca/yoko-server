@@ -1,7 +1,6 @@
 package com.fifteentec.yoko.server.controller;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -36,13 +35,10 @@ public class OrganizationController {
 		organization.setType(postclass.getType());
 		organization.setPicturelink(postclass.getPicturelink());
 		organization.setIntroduction(postclass.getIntroduction());
-		organization.setMobile(postclass.getMobile());
-		organization.setPassword(postclass.getPassword());
 		organization.setRealname(postclass.getRealname());
 		organization.setCard(postclass.getCard());
 		organization.setAddress(postclass.getAddress());
 		organization.setPhotolink(postclass.getPhotolink());
-		
 		try{
 			organizationRepository.save(organization);
 		}

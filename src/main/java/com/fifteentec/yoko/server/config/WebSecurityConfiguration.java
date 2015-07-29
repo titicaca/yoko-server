@@ -11,13 +11,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.fifteentec.yoko.server.repository.UserRepository;
+import com.fifteentec.yoko.server.model.Account;
+import com.fifteentec.yoko.server.repository.AccountRepository;
 
 @Configuration
 public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 	
 	@Autowired
-	UserRepository userRepository;
+	AccountRepository accountRepository;
 	
 	@Override
 	public void init(AuthenticationManagerBuilder auth) throws Exception {
@@ -30,9 +31,9 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
 
 			@Override
 			public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
-				com.fifteentec.yoko.server.model.User user = userRepository.findByMobile(mobile);
-				if (user != null) {
-					return new User(user.getMobile(), user.getPassword(), true, true, true, true,
+				Account account = accountRepository.findByUsername("0_"+mobile);
+				if (account != null) {
+					return new User(account.getUsername(), account.getPassword(), true, true, true, true,
 							AuthorityUtils.createAuthorityList("USER"));
 				} else {
 					throw new UsernameNotFoundException("could not find the user '" + mobile + "'");

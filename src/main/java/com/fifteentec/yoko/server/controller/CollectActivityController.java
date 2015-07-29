@@ -1,5 +1,6 @@
 package com.fifteentec.yoko.server.controller;
 
+import java.security.Principal;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,10 @@ public class CollectActivityController {
 		return activity.getCollectusers();
 	}
 	
-	@RequestMapping(method=RequestMethod.POST)
-	public Result addUserCollectActivity(@RequestBody UserAndActivity postclass){
-		Activity activity = activityRepository.findById(postclass.getActivity_id());
-		User user = userRepository.findById(postclass.getUser_id());	
+	@RequestMapping(value="{activity_id}",method=RequestMethod.POST)
+	public Result addUserCollectActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
+		Activity activity = activityRepository.findById(activity_id);
+		User user = userRepository.findByMobile(principal.getName());	
 		try{
 			activity.getCollectusers().add(user);
 			activityRepository.save(activity);
@@ -44,10 +45,10 @@ public class CollectActivityController {
 		return new Result(true);	
 	}
 	
-	@RequestMapping(method=RequestMethod.DELETE)
-	public Result delUserCollectActivity(@RequestBody UserAndActivity postclass){
-		Activity activity = activityRepository.findById(postclass.getActivity_id());
-		User user = userRepository.findById(postclass.getUser_id());	
+	@RequestMapping(value="{activity_id}",method=RequestMethod.DELETE)
+	public Result delUserCollectActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
+		Activity activity = activityRepository.findById(activity_id);
+		User user = userRepository.findByMobile(principal.getName());	
 		try{
 			activity.getCollectusers().remove(user);
 			activityRepository.save(activity);

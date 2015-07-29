@@ -21,7 +21,7 @@ public class AppointmentController {
 	
 	@RequestMapping(value="/{appointment_id}",method=RequestMethod.GET)
 	public Appointment getAppointment(@PathVariable("appointment_id") Long appointment_id,Principal principal){
-		User user = userRepository.findByMobile(principal.getName());
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
 		Appointment appointment = appointmentRepository.findById(appointment_id);
 		if(appointment.getUser() == user)
 			return appointment;
@@ -31,7 +31,7 @@ public class AppointmentController {
 	
 	@RequestMapping(method=RequestMethod.POST)
 	public Result addAppointment(Principal principal, @RequestBody Appointment postclass){
-		User user = userRepository.findByMobile(principal.getName());
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
 		Appointment appointment = new Appointment();
 		appointment.setName(postclass.getName());
 		appointment.setTimebegin(postclass.getTimebegin());

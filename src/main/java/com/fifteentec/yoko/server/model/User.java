@@ -43,11 +43,30 @@ public class User extends BaseModel{
 	@Version
 	private Long version;
 	
-	@Column(name="mobile",unique=true)
-	private String mobile;  
+	@Column(name="nickname")
+    private String nickname;
 	
-	@Column(name="password")
-    private String password;
+	@Column(name="mobile")
+    private String mobile;
+	
+	@Column(name="sex")
+	private int sex; 
+	
+	@Column(name="email")
+    private String email;
+	
+	@Column(name="qq")
+    private String qq;
+	
+	@Column(name="wechat")
+    private String wechat;
+	
+	@Column(name="weibo")
+    private String weibo;
+	
+	@Column(name="picturelink")
+    private String picturelink;
+	
 	
 	@Basic(optional=false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -57,9 +76,9 @@ public class User extends BaseModel{
 	@Column(name="status",columnDefinition = "INT default 0")
 	private int status;	
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-	@JsonIgnore
-	private Userinfo userinfo;
+//	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+//	@JsonIgnore
+//	private Userinfo userinfo;
 	
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="user")
 	@JsonIgnore
@@ -145,8 +164,8 @@ public class User extends BaseModel{
     }
     
     public User(String mobile, String password) {
-		this.mobile = mobile;
-		this.password = password;
+		//this.mobile = mobile;
+	//	this.password = password;
 	}
 
 	public Long getId() {
@@ -156,22 +175,72 @@ public class User extends BaseModel{
 	public void setId(Long id) {
 		this.id = id;
 	}
-    
-    public String getMobile() {  
-        return mobile;  
-    }  
-  
-    public void setMobile(String mobile) {  
-        this.mobile = mobile;  
-    }  
-    
-    public String getPassword() {  
-        return password;  
-    }  
-  
-    public void setPassword(String password) {  
-        this.password = password;  
-    }
+	
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public int getSex() {
+		return sex;
+	}
+
+	public void setSex(int sex) {
+		this.sex = sex;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getQq() {
+		return qq;
+	}
+
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+
+	public String getWechat() {
+		return wechat;
+	}
+
+	public void setWechat(String wechat) {
+		this.wechat = wechat;
+	}
+
+	public String getWeibo() {
+		return weibo;
+	}
+
+	public void setWeibo(String weibo) {
+		this.weibo = weibo;
+	}
+
+	public String getPicturelink() {
+		return picturelink;
+	}
+
+	public void setPicturelink(String picturelink) {
+		this.picturelink = picturelink;
+	}
 
 	public Date getCreatedtime() {
 		return createdtime;
@@ -190,13 +259,13 @@ public class User extends BaseModel{
 	}
 	
 	
-	public Userinfo getUserinfo() {
-		return userinfo;
-	}
-
-	public void setUserinfo(Userinfo userinfo) {
-		this.userinfo = userinfo;
-	}
+//	public Userinfo getUserinfo() {
+//		return userinfo;
+//	}
+//
+//	public void setUserinfo(Userinfo userinfo) {
+//		this.userinfo = userinfo;
+//	}
 
 	public Set<Schedule> getSchedules() {
 		return schedules;

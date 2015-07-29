@@ -25,14 +25,14 @@ public class ScheduleController {
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public Set<Schedule> getSchedules(Principal principal){
-		User user = userRepository.findByMobile(principal.getName());
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
 		Set<Schedule> schedules = scheduleRepository.findByUser_id(user.getId());
 		return schedules;
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
 	public Result addSchedule(Principal principal, @RequestBody Schedule postclass){
-		User user = userRepository.findByMobile(principal.getName());
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
 		Schedule schedule = new Schedule();
 		schedule.setName(postclass.getName());
 		schedule.setTimebegin(postclass.getTimebegin());
