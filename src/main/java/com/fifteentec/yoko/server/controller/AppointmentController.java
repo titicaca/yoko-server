@@ -1,5 +1,7 @@
 package com.fifteentec.yoko.server.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +20,18 @@ public class AppointmentController {
 	AppointmentRepository appointmentRepository;
 	
 	@RequestMapping(value="/{appointment_id}",method=RequestMethod.GET)
-	public Appointment getAppointment(@PathVariable("appointment_id") Long appointment_id){
-		return appointmentRepository.findById(appointment_id);
+	public Appointment getAppointment(@PathVariable("appointment_id") Long appointment_id,Principal principal){
+		User user = userRepository.findByMobile(principal.getName());
+		Appointment appointment = appointmentRepository.findById(appointment_id);
+		if(appointment.getUser() == user)
+			return appointment;
+		else 
+			return null;
 	}
 	
-	@RequestMapping(value="/{user_id}",method=RequestMethod.POST)
-	public Result addAppointment(@PathVariable("user_id") Long user_id, @RequestBody Appointment postclass){
+	@RequestMapping(method=RequestMethod.POST)
+	public Result addAppointment(Principal principal, @RequestBody Appointment postclass){
+		User user = userRepository.findByMobile(principal.getName());
 		Appointment appointment = new Appointment();
 		appointment.setName(postclass.getName());
 		appointment.setTimebegin(postclass.getTimebegin());
@@ -33,7 +41,7 @@ public class AppointmentController {
 		appointment.setPeopleall(postclass.getPeopleall());
 		appointment.setPicturelink(postclass.getPicturelink());
 		appointment.setDetaillink(postclass.getDetaillink());
-		appointment.setUser(userRepository.findById(user_id));
+		appointment.setUser(user);
 		try{
 			appointmentRepository.save(appointment);
 		}

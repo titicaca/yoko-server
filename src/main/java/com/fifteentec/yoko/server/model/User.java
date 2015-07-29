@@ -46,9 +46,6 @@ public class User extends BaseModel{
 	@Column(name="mobile",unique=true)
 	private String mobile;  
 	
-	@Column(name="username")
-    private String username;
-	
 	@Column(name="password")
     private String password;
 	
@@ -147,8 +144,8 @@ public class User extends BaseModel{
     	
     }
     
-    public User(String username, String password) {
-		this.username = username;
+    public User(String mobile, String password) {
+		this.mobile = mobile;
 		this.password = password;
 	}
 
@@ -166,14 +163,6 @@ public class User extends BaseModel{
   
     public void setMobile(String mobile) {  
         this.mobile = mobile;  
-    }  
-  
-    public String getUsername() {  
-        return username;  
-    }  
-  
-    public void setUsername(String username) {  
-        this.username = username;  
     }  
     
     public String getPassword() {  

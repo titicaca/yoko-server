@@ -32,16 +32,16 @@ public class Application {
         return "Hello World!";
     }
 	
-	@Bean
-	CommandLineRunner init(UserRepository accountRepository) {
-		return (evt) -> Arrays.asList(
-				"jhoeller,dsyer,pwebb,ogierke,rwinch,mfisher,mpollack,jlong".split(","))
-				.forEach(
-						a -> {
-							accountRepository.save(new User(a,
-									"password"));
-						});
-	}
+//	@Bean
+//	CommandLineRunner init(UserRepository accountRepository) {
+//		return (evt) -> Arrays.asList(
+//				"jhoeller,dsyer,pwebb,ogierke,rwinch,mfisher,mpollack,jlong".split(","))
+//				.forEach(
+//						a -> {
+//							accountRepository.save(new User(a,
+//									"password"));
+//						});
+//	}
 	
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {

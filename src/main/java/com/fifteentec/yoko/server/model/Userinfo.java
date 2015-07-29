@@ -26,6 +26,9 @@ public class Userinfo extends BaseModel{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
+	@Column(name="username")
+    private String username;
+	
 	@Column(name="sex")
 	private int sex; 
 	
@@ -69,6 +72,14 @@ public class Userinfo extends BaseModel{
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+    public String getUsername() {  
+        return username;  
+    }  
+  
+    public void setUsername(String username) {  
+        this.username = username;  
+    }  
 	
 	public User getUser(){
 		return user;

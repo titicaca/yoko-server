@@ -11,9 +11,8 @@ import org.springframework.stereotype.Repository;
 @Table(name = "User")
 @Qualifier(value = "userRepository")
 public interface UserRepository  extends JpaRepository<User, Long> {
-	public User findByUsername(String username);
 	public User findById(Long id);
 	public User findByMobileAndPassword(String mobile, String password);
-//	public User findByUser(User user);
+	public User findByMobile(String mobile);
 	
 }

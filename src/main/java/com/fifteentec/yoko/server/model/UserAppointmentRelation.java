@@ -26,12 +26,12 @@ public class UserAppointmentRelation {
 	private Long id;
 	
 	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="user_id",nullable=false)
 	@JsonIgnore
 	private User user;
 	
 	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
-	@JoinColumn(name="appointment_id")
+	@JoinColumn(name="appointment_id",nullable=false)
 	@JsonIgnore
 	private Appointment appointment;
 	

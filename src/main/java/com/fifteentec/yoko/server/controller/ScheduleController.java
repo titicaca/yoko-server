@@ -1,5 +1,6 @@
 package com.fifteentec.yoko.server.controller;
 
+import java.security.Principal;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,16 @@ public class ScheduleController {
 	@Autowired
 	UserRepository userRepository;
 	
-	@RequestMapping(value="/{user_id}",method=RequestMethod.GET)
-	public Set<Schedule> getSchedules(@PathVariable("user_id") Long user_id){
-		Set<Schedule> schedules = scheduleRepository.findByUser_id(user_id);
+	@RequestMapping(method=RequestMethod.GET)
+	public Set<Schedule> getSchedules(Principal principal){
+		User user = userRepository.findByMobile(principal.getName());
+		Set<Schedule> schedules = scheduleRepository.findByUser_id(user.getId());
 		return schedules;
 	}
 	
-	@RequestMapping(value="/{user_id}",method=RequestMethod.POST)
-	public Result addSchedule(@PathVariable("user_id") Long user_id, @RequestBody Schedule postclass){
+	@RequestMapping(method=RequestMethod.POST)
+	public Result addSchedule(Principal principal, @RequestBody Schedule postclass){
+		User user = userRepository.findByMobile(principal.getName());
 		Schedule schedule = new Schedule();
 		schedule.setName(postclass.getName());
 		schedule.setTimebegin(postclass.getTimebegin());
@@ -41,7 +44,7 @@ public class ScheduleController {
 		schedule.setIntroduction(postclass.getIntroduction());
 		schedule.setProperty(postclass.getProperty());
 		schedule.setDetaillink(postclass.getDetaillink());
-		schedule.setUser(userRepository.findById(user_id));
+		schedule.setUser(user);
 		
 		try{
 			scheduleRepository.save(schedule);

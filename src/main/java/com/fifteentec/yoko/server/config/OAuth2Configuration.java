@@ -59,10 +59,10 @@ public class OAuth2Configuration {
 //                    .antMatchers("/logreview").authenticated()
                     .antMatchers("/oauth/token").authenticated()
                     .anyRequest().authenticated()
-                    .and()
-                    .csrf()
-                    .csrfTokenRepository(csrfTokenRepository()).and()
-                    .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
+                  //  .and()
+                 //   .csrf()
+                 //   .csrfTokenRepository(csrfTokenRepository()).and()
+                 //   .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
                     ;
             }
 
@@ -129,8 +129,9 @@ public class OAuth2Configuration {
     
     		clients.inMemory().withClient("android-" + applicationName)
     				.authorizedGrantTypes("password", "authorization_code", "refresh_token")
-    				.authorities("ROLE_USER").scopes("write").resourceIds(applicationName)
+    				.authorities("ROLE_USER","ROLE_SPONSOR").scopes("read","write")
     				.secret("123456");
+  
     	}
 
 //        @Autowired

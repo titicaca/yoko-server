@@ -29,15 +29,16 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
 		return new UserDetailsService() {
 
 			@Override
-			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				com.fifteentec.yoko.server.model.User user = userRepository.findByUsername(username);
+			public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
+				com.fifteentec.yoko.server.model.User user = userRepository.findByMobile(mobile);
 				if (user != null) {
-					return new User(user.getUsername(), user.getPassword(), true, true, true, true,
+					return new User(user.getMobile(), user.getPassword(), true, true, true, true,
 							AuthorityUtils.createAuthorityList("USER"));
 				} else {
-					throw new UsernameNotFoundException("could not find the user '" + username + "'");
+					throw new UsernameNotFoundException("could not find the user '" + mobile + "'");
 				}
 			}
+			
 
 		};
 	}
