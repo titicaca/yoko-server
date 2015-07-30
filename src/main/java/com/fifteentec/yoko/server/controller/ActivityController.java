@@ -1,5 +1,6 @@
 package com.fifteentec.yoko.server.controller;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.repository.ActivityRepository;
 import com.fifteentec.yoko.server.repository.OrganizationRepository;
@@ -48,8 +50,10 @@ public class ActivityController {
 	}
 	
 	
-	@RequestMapping(value="/{organization_id}",method=RequestMethod.POST)
-	public Result addActivity(@PathVariable("organization_id") Long organization_id, @RequestBody Activity postclass){
+	@RequestMapping(method=RequestMethod.POST)
+	public Result addActivity(Principal principal, @RequestBody Activity postclass){
+		if(!Account.findRole(principal.getName()).equals("1")) throw new PermissionErrorException();
+		Organization organization = organizationRepository.findByMobile(Account.findMobile(principal.getName()));
 		Activity activity = new Activity();
 		activity.setName(postclass.getName());
 		activity.setTimebegin(postclass.getTimebegin());
@@ -59,7 +63,7 @@ public class ActivityController {
 		activity.setPeopleall(postclass.getPeopleall());
 		activity.setPicturelink(postclass.getPicturelink());
 		activity.setDetaillink(postclass.getDetaillink());
-		activity.setOrganization(organizationRepository.findById(organization_id));
+		activity.setOrganization(organization);
 		
 		try{
 			activityRepository.save(activity);

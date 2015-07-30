@@ -32,7 +32,7 @@ public class Organization extends BaseModel{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="name",nullable=false)
+	@Column(name="name")
 	private String name;
 	
 	@Column(name="type")
@@ -43,6 +43,12 @@ public class Organization extends BaseModel{
 	
 	@Column(name="introduction")
 	private String introduction;
+	
+	@Column(name="mobile",unique=true)
+	private String mobile;
+		
+//	@Column(name="password")
+//	private String password;
 
 	@Column(name="realname")
 	private String realname;
@@ -120,14 +126,14 @@ public class Organization extends BaseModel{
 		this.introduction = introduction;
 	}
 	
-//	public String getMobile() {
-//		return mobile;
-//	}
-//
-//	public void setMobile(String mobile) {
-//		this.mobile = mobile;
-//	}
-//
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
 //	public String getPassword() {
 //		return password;
 //	}

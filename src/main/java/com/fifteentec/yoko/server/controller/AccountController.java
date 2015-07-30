@@ -26,9 +26,11 @@ public class AccountController {
 	private UserRepository userRepository;
 	@Autowired
 	private AccountRepository accountRepository;
+	@Autowired
+	private OrganizationRepository organizationRepository;
 	
-	@RequestMapping(value="/signup",method=RequestMethod.POST)  
-    public Result addAccount(@RequestBody SignUpInfo postclass) {  
+	@RequestMapping(value="/signup/user",method=RequestMethod.POST)  
+    public Result addUserAccount(@RequestBody SignUpInfo postclass) {  
 		Account account = new Account();
 		account.setUsername("0_"+postclass.getMobile());
 		account.setPassword(postclass.getPassword());
@@ -39,7 +41,7 @@ public class AccountController {
         	return new Result(false);
         }
         User user = new User();
-        user.setNickname(postclass.getNickname());
+        user.setNickname(postclass.getName());
         user.setMobile(postclass.getMobile());
         try{
         	userRepository.save(user);
@@ -50,9 +52,45 @@ public class AccountController {
         return new Result(true);
 	}
 	
-	@RequestMapping(value="/signup",method=RequestMethod.PUT)  
-    public Result updateAccount(@RequestBody SignUpInfo postclass) {  
+	@RequestMapping(value="/signup/user",method=RequestMethod.PUT)  
+    public Result updateUserAccount(@RequestBody SignUpInfo postclass) {  
 		Account account = accountRepository.findByUsername("0_"+postclass.getMobile());
+		account.setPassword(postclass.getPassword());
+        try{
+        	accountRepository.save(account);
+        }
+        catch(Exception e){
+        	return new Result(false);
+        }
+        return new Result(true);
+	}
+	
+	@RequestMapping(value="/signup/organization",method=RequestMethod.POST)  
+    public Result addSponsorAccount(@RequestBody SignUpInfo postclass) {  
+		Account account = new Account();
+		account.setUsername("1_"+postclass.getMobile());
+		account.setPassword(postclass.getPassword());
+        try{
+        	accountRepository.save(account);
+        }
+        catch(Exception e){
+        	return new Result(false);
+        }
+        Organization organization = new Organization();
+        organization.setRealname(postclass.getName());
+        organization.setMobile(postclass.getMobile());
+        try{
+        	organizationRepository.save(organization);
+        }
+        catch(Exception e){
+        	return new Result(false);
+        }
+        return new Result(true);
+	}
+	
+	@RequestMapping(value="/signup/organization",method=RequestMethod.PUT)  
+    public Result updateSponsorAccount(@RequestBody SignUpInfo postclass) {  
+		Account account = accountRepository.findByUsername("1_"+postclass.getMobile());
 		account.setPassword(postclass.getPassword());
         try{
         	accountRepository.save(account);
@@ -66,12 +104,12 @@ public class AccountController {
 }
 
 class SignUpInfo{
-	private String nickname;
+	private String name;
 	private String mobile;
 	private String password;
 	
-	public String getNickname(){
-		return nickname;
+	public String getName(){
+		return name;
 	}
 	
 	public String getMobile() {

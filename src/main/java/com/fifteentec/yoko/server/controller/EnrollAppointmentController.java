@@ -1,11 +1,13 @@
 package com.fifteentec.yoko.server.controller;
 
+import java.security.Principal;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.repository.AppointmentRepository;
 import com.fifteentec.yoko.server.repository.UserAppointmentRelationRepository;
@@ -25,20 +27,28 @@ public class EnrollAppointmentController {
 	UserAppointmentRelationRepository userAppointmentRelationRepository;
 	
 	
-	@RequestMapping(value="byuser/{user_id}",method=RequestMethod.GET)
-	public Set<Appointment> getAppointmentByUser(@PathVariable("user_id") Long user_id){
-		User user = userRepository.findById(user_id);
+	@RequestMapping(value="byuser",method=RequestMethod.GET)
+	public Set<Appointment> getAppointmentByUser(Principal principal){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
 		Set<Appointment> appointments= user.findAppointmentsByUserAppointmentRelations();
 		return appointments;
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public Result addUserAppointmentRelation(@RequestBody UserAndAppointment postclass){
+	public Result addUserAppointmentRelation(Principal principal , @RequestBody UserAndAppointment postclass){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
+		Appointment appointment = appointmentRepository.findById(postclass.getAppointment_id());
+		if(appointment.getUser() != user)
+			return new Result(false);
+		if(userAppointmentRelationRepository.findByUser_idAndAppointment_id(postclass.getUser_id(), postclass.getAppointment_id())!=null)
+			return new Result(false);
 		UserAppointmentRelation userAppointmentRelation = new UserAppointmentRelation();
 		
 		try{
 			userAppointmentRelation.setUser(userRepository.findById(postclass.getUser_id()));
-			userAppointmentRelation.setAppointment(appointmentRepository.findById(postclass.getAppointment_id()));
+			userAppointmentRelation.setAppointment(appointment);
 			userAppointmentRelationRepository.save(userAppointmentRelation);
 		}
 		catch(Exception e){

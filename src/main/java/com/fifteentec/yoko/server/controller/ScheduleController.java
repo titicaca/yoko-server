@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.repository.ScheduleRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
@@ -25,6 +26,7 @@ public class ScheduleController {
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public Set<Schedule> getSchedules(Principal principal){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
 		Set<Schedule> schedules = scheduleRepository.findByUser_id(user.getId());
 		return schedules;
@@ -32,6 +34,7 @@ public class ScheduleController {
 	
 	@RequestMapping(method=RequestMethod.POST)
 	public Result addSchedule(Principal principal, @RequestBody Schedule postclass){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
 		Schedule schedule = new Schedule();
 		schedule.setName(postclass.getName());

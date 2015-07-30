@@ -16,5 +16,6 @@ import com.fifteentec.yoko.server.model.Organization;
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 	
 	public Organization findById(Long id);
+	public Organization findByMobile(String mobile);
 	
 }

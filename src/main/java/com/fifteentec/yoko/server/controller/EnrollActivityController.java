@@ -1,11 +1,13 @@
 package com.fifteentec.yoko.server.controller;
 
+import java.security.Principal;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.repository.ActivityRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
@@ -21,9 +23,10 @@ public class EnrollActivityController {
 	@Autowired
 	ActivityRepository activityRepository;
 	
-	@RequestMapping(value="/byuser/{user_id}",method=RequestMethod.GET)
-	public Set<Activity> getActivitiesByUser(@PathVariable("user_id") Long user_id){
-		User user = userRepository.findById(user_id);
+	@RequestMapping(value="/byuser",method=RequestMethod.GET)
+	public Set<Activity> getActivitiesByUser(Principal principal){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
 		return user.getEnrollactivities();
 	}
 	
@@ -33,10 +36,11 @@ public class EnrollActivityController {
 		return activity.getEnrollusers();
 	}
 	
-	@RequestMapping(method=RequestMethod.POST)
-	public Result addUserEnrollActivity(@RequestBody UserAndActivity postclass){
-		Activity activity = activityRepository.findById(postclass.getActivity_id());
-		User user = userRepository.findById(postclass.getUser_id());	
+	@RequestMapping(value="{activity_id}",method=RequestMethod.POST)
+	public Result addUserEnrollActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
+		Activity activity = activityRepository.findById(activity_id);
 		try{
 			activity.getEnrollusers().add(user);
 			activityRepository.save(activity);
@@ -47,10 +51,11 @@ public class EnrollActivityController {
 		return new Result(true);	
 	}
 	
-	@RequestMapping(method=RequestMethod.DELETE)
-	public Result delUserEnrollActivity(@RequestBody UserAndActivity postclass){
-		Activity activity = activityRepository.findById(postclass.getActivity_id());
-		User user = userRepository.findById(postclass.getUser_id());	
+	@RequestMapping(value="{activity_id}",method=RequestMethod.DELETE)
+	public Result delUserEnrollActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
+		Activity activity = activityRepository.findById(activity_id);	
 		try{
 			activity.getEnrollusers().remove(user);
 			activityRepository.save(activity);
@@ -63,13 +68,3 @@ public class EnrollActivityController {
 
 }
 
-class UserAndActivity{
-	Long user_id;
-	Long activity_id;
-	public Long getUser_id() {
-		return user_id;
-	}
-	public Long getActivity_id() {
-		return activity_id;
-	}	
-}
