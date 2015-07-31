@@ -17,7 +17,7 @@ import com.fifteentec.yoko.server.repository.UserRepository;
 @RestController  
 @RequestMapping("/collectactivity")  
 @EnableAutoConfiguration
-public class CollectActivityController {     
+public class CollectActivityController {          
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
