@@ -90,6 +90,14 @@ public class Tag {
 	public void setUserFriendRelations(Set<UserFriendRelation> userFriendRelations) {
 		this.userFriendRelations = userFriendRelations;
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 	
 	
 
