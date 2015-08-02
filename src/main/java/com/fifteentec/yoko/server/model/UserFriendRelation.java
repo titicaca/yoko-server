@@ -1,6 +1,7 @@
 package com.fifteentec.yoko.server.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -11,7 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,11 +39,15 @@ public class UserFriendRelation {
 	@JsonIgnore
 	private User friend;
 	
+	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@JoinTable(name="TagUserFriendRelation",
+	joinColumns={@JoinColumn(name="user_friend_relation_id")},
+	inverseJoinColumns={@JoinColumn(name="tag_id")})
+	@JsonIgnore
+	private Set<Tag> tags;
+	
 	@Column(name="status",columnDefinition = "INT default 0")
 	private int status;
-	
-	@Column(name="tagname")
-	private String tagname;
 	
 	@Basic(optional=false)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -78,14 +86,6 @@ public class UserFriendRelation {
 		this.status = status;
 	}
 
-	public String getTagname() {
-		return tagname;
-	}
-
-	public void setTagname(String tagname) {
-		this.tagname = tagname;
-	}
-
 	public Date getCreatedtime() {
 		return createdtime;
 	}
@@ -93,6 +93,16 @@ public class UserFriendRelation {
 	public void setCreatedtime(Date createdtime) {
 		this.createdtime = createdtime;
 	}
+
+	public Set<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<Tag> tags) {
+		this.tags = tags;
+	}
+	
+	
 	
 	
 }

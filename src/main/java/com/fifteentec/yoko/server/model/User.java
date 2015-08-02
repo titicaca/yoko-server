@@ -151,6 +151,10 @@ public class User extends BaseModel{
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="friend")
 	@JsonIgnore
 	private Set<UserFriendRelation> friendUserRequest;
+	
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="user")
+	@JsonIgnore
+	private Set<Tag> tags;
 //	
 //	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 //	@JoinTable(name="EnrollAppointment",

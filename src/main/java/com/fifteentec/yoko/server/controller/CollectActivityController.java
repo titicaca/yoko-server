@@ -1,8 +1,6 @@
 package com.fifteentec.yoko.server.controller;
 
-import java.awt.List;
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
