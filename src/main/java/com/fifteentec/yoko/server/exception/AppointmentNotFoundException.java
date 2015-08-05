@@ -11,7 +11,7 @@ public class AppointmentNotFoundException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public AppointmentNotFoundException(String appointment_id) {
-		super("could not find user '" + appointment_id + "'.");
+	public AppointmentNotFoundException(Long appointment_id) {
+		super("could not find appointment '" + appointment_id + "'.");
 	}
 }

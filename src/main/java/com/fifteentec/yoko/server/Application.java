@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.Http11NioProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 //import org.springframework.boot.*;
@@ -19,7 +21,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 
+import com.fifteentec.yoko.server.model.Account;
 import com.fifteentec.yoko.server.model.User;
+import com.fifteentec.yoko.server.repository.AccountRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
 
 
@@ -27,21 +31,28 @@ import com.fifteentec.yoko.server.repository.UserRepository;
 @RestController
 @EnableAutoConfiguration
 public class Application {
+	
+	private Logger logger = LoggerFactory.getLogger(Application.class);
+	
 	@RequestMapping("/home")
     String home() {
+		logger.info("[Log Test] Hello World!");
         return "Hello World!";
     }
+
 	
-//	@Bean
-//	CommandLineRunner init(UserRepository accountRepository) {
-//		return (evt) -> Arrays.asList(
-//				"jhoeller,dsyer,pwebb,ogierke,rwinch,mfisher,mpollack,jlong".split(","))
-//				.forEach(
-//						a -> {
-//							accountRepository.save(new User(a,
-//									"password"));
-//						});
-//	}
+	@Bean
+	CommandLineRunner init(AccountRepository accountRepository) {
+		return (evt) -> Arrays.asList(
+				"jhoeller,dsyer,pwebb,ogierke,rwinch,mfisher,mpollack,jlong".split(","))
+				.forEach(
+						a -> {
+							Account account = new Account();
+							account.setUsername(a);
+							account.setPassword("password");
+							accountRepository.save(account);
+						});
+	}
 	
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {

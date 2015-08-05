@@ -71,6 +71,13 @@ public class Appointment extends BaseModel{
 	@Column(name="createdtime")
 	private Date createdtime = new Date();
 	
+	/*
+	 * invitation status
+	 * 0 -- default
+	 * 1 -- accept
+	 * 2 -- reject
+	 * 3 -- uncertain
+	 */
 	@Column(name="status",columnDefinition = "INT default 0")
 	private int status;	
 	

@@ -1,15 +1,21 @@
 package com.fifteentec.yoko.server.controller;
 
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
+import com.fifteentec.yoko.server.exception.UserNotFoundException;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.repository.UserRepository;
+import com.fifteentec.yoko.server.service.AccountService;
 
 @RestController  
 @RequestMapping("/user")  
@@ -17,34 +23,39 @@ import com.fifteentec.yoko.server.repository.UserRepository;
 
 public class UserController {
 	@Autowired
-	UserRepository userRepository;
+	AccountService accountService;
 	
-	@RequestMapping(method=RequestMethod.GET)
+	private Logger logger = LoggerFactory.getLogger(UserController.class);
+	
+	/**
+	 * Get userinfo
+	 * @param principal
+	 * @return user
+	 */
+	@RequestMapping(value="/userinfo",method=RequestMethod.GET)
 	public User getUser(Principal principal){
-		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
-		return user;
+		if(!Account.findRole(principal.getName()).equals("0")) {
+			logger.error("[getUser] user: "+ principal.getName() + " permission denied");
+			throw new PermissionErrorException();
+		}
+		return accountService.getUser(Account.findMobile(principal.getName()));
 	}
 	
-	@RequestMapping(method=RequestMethod.PUT)
-	public Result updateUser(Principal principal, @RequestBody User postclass){
-		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
-		user.setNickname(postclass.getNickname());
-		user.setMobile(postclass.getMobile());
-		user.setSex(postclass.getSex());
-		user.setEmail(postclass.getEmail());
-		user.setQq(postclass.getQq());
-		user.setWechat(postclass.getWechat());
-		user.setWeibo(postclass.getWeibo());
-		user.setPicturelink(postclass.getPicturelink());	
-		try{
-			userRepository.save(user);
+	/**
+	 * update userinfo
+	 * @param principal
+	 * @param postclass
+	 * @return boolean
+	 */
+	@RequestMapping(value="/userinfo", method=RequestMethod.PUT)
+	public ResponseEntity<Boolean> updateUser(Principal principal, @RequestBody User postclass){
+		if(!Account.findRole(principal.getName()).equals("0")) {
+			logger.error("[updateUser] user: "+ principal.getName() + " permission denied");
+			throw new PermissionErrorException();
 		}
-		catch(Exception e){
-			return new Result(false);
-		}
-		return new Result(true);
+		return new Result(accountService.updateUserInfo(Account.findMobile(principal.getName()), postclass)).getResponseResult();
 	}
+	
+
 	
 }
