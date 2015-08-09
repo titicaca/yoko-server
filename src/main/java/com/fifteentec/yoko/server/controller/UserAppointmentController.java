@@ -28,7 +28,7 @@ public class UserAppointmentController {
 	}
 	
 	@RequestMapping(value="/host/", method=RequestMethod.POST)
-	public ResponseEntity<Boolean> addHostAppointment(Principal principal, @RequestBody Appointment postclass){
+	public ResponseEntity<String> addHostAppointment(Principal principal, @RequestBody Appointment postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return new Result(appointmentService.addHostAppointment(Account.findMobile(principal.getName()), postclass)).getResponseResult();
 	}
@@ -48,7 +48,7 @@ public class UserAppointmentController {
 	}
 	
 	@RequestMapping(value="/enroll/", method=RequestMethod.POST)
-	public ResponseEntity<Boolean> addUserAppointmentRelation(Principal principal , @RequestBody UserAndAppointment postclass){
+	public ResponseEntity<String> addUserAppointmentRelation(Principal principal , @RequestBody UserAndAppointment postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Boolean result = appointmentService.inviteUserAppointment(Account.findMobile(principal.getName()), 
 				postclass.getUser_id(), postclass.getAppointment_id());
@@ -56,7 +56,7 @@ public class UserAppointmentController {
 	}
 	
 	@RequestMapping(value="/enroll/",method=RequestMethod.PUT)
-	public ResponseEntity<Boolean> updateUserAppointmentRelation(Principal principal, @RequestBody UserAndAppointment postclass){
+	public ResponseEntity<String> updateUserAppointmentRelation(Principal principal, @RequestBody UserAndAppointment postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return new Result(appointmentService.updateUserAppointmentRelationStatus(postclass.getUser_id(), 
 				postclass.getAppointment_id(), postclass.getStatus())).getResponseResult();	

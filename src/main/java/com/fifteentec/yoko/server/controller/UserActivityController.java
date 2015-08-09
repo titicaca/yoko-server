@@ -1,6 +1,7 @@
 package com.fifteentec.yoko.server.controller;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.Account;
 import com.fifteentec.yoko.server.model.Activity;
+import com.fifteentec.yoko.server.model.Organization;
 import com.fifteentec.yoko.server.model.Result;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.repository.UserRepository;
@@ -75,8 +77,8 @@ public class UserActivityController {
 	 * @param activity_id
 	 * @return
 	 */
-	@RequestMapping(value="{activity_id}",method=RequestMethod.POST)
-	public ResponseEntity<Boolean> enrollActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
+	@RequestMapping(value="/enroll/{activity_id}",method=RequestMethod.POST)
+	public ResponseEntity<String> enrollActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Boolean result = activityService.enrollUserInActivity(Account.findMobile(principal.getName()), activity_id);
 		return new Result(result).getResponseResult();
@@ -95,12 +97,60 @@ public class UserActivityController {
 	
 	
 	@RequestMapping(value="{activity_id}",method=RequestMethod.DELETE)
-	public ResponseEntity<Boolean> delUserEnrollActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
+	public ResponseEntity<String> delUserEnrollActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Boolean result = activityService.delUserFromActivity(Account.findMobile(principal.getName()), activity_id);
 		return new Result(result).getResponseResult();
 	}
 	
+	@RequestMapping(value="/collect/activities",method=RequestMethod.GET)
+	public String getUserCollectedActivities(Principal principal){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Set<Activity> activities = activityService.getUserCollectedActivities(Account.findMobile(principal.getName()));
+		return ContainerToJsonStringConverter.convertSetToJsonString(activities);
+	}
+	
+	@RequestMapping(value="/collect/{activity_id}/users",method=RequestMethod.GET)
+	public String getActivityCollectingUsers(Principal principal, @PathVariable("activity_id") Long activity_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Set<User> users = activityService.getActivityCollectingUsers(activity_id);
+		return ContainerToJsonStringConverter.convertSetToJsonString(users);
+	}
+	
+	@RequestMapping(value="/collect/{activity_id}",method=RequestMethod.POST)
+	public ResponseEntity<String> addUserCollectActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Boolean r = activityService.addUserCollectedActivity(Account.findMobile(principal.getName()), activity_id);
+		return new Result(r).getResponseResult();
+	}
+	
+	@RequestMapping(value="/collect/{activity_id}",method=RequestMethod.DELETE)
+	public ResponseEntity<String> delUserCollectedActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Boolean r = activityService.delUserCollectedActivity(Account.findMobile(principal.getName()), activity_id);
+		return new Result(r).getResponseResult();
+	}
+	
+	@RequestMapping(value="/watch/orgs",method=RequestMethod.GET)
+	public String getUserWatchedOrganizations(Principal principal){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Set<Organization> orgs = activityService.getUserWatchedOrganizations(Account.findMobile(principal.getName()));
+		return ContainerToJsonStringConverter.convertSetToJsonString(orgs);
+	}
+	
+	@RequestMapping(value="/watch/{organization_id}",method=RequestMethod.POST)
+	public ResponseEntity<String> addUserWatchedOrganization(Principal principal ,@PathVariable("organization_id") Long organization_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Boolean r = activityService.addUserCollectedActivity(Account.findMobile(principal.getName()), organization_id);
+		return new Result(r).getResponseResult();
+	}
+	
+	@RequestMapping(value="/watch/{organization_id}",method=RequestMethod.DELETE)
+	public ResponseEntity<String> delUserWatchedOrganization(Principal principal ,@PathVariable("organization_id") Long organization_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Boolean r = activityService.delUserWatchedOrganization(Account.findMobile(principal.getName()), organization_id);
+		return new Result(r).getResponseResult();
+	}
 	
 	
 	

@@ -48,7 +48,7 @@ public class UserController {
 	 * @return boolean
 	 */
 	@RequestMapping(value="/userinfo", method=RequestMethod.PUT)
-	public ResponseEntity<Boolean> updateUser(Principal principal, @RequestBody User postclass){
+	public ResponseEntity<String> updateUser(Principal principal, @RequestBody User postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) {
 			logger.error("[updateUser] user: "+ principal.getName() + " permission denied");
 			throw new PermissionErrorException();

@@ -59,7 +59,7 @@ public class OrganizationController {
 	 * @return Boolean f
 	 */
 	@RequestMapping(value="/orginfo", method=RequestMethod.PUT)
-	public ResponseEntity<Boolean> updateOrganization(Principal principal ,@RequestBody Organization postclass){
+	public ResponseEntity<String> updateOrganization(Principal principal ,@RequestBody Organization postclass){
 		if(!Account.findRole(principal.getName()).equals("1")) {
 			logger.error("[updateOrganization] org: "+ principal.getName() + " permission denied");
 			throw new PermissionErrorException();

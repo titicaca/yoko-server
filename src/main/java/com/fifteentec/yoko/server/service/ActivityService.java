@@ -122,7 +122,7 @@ public class ActivityService {
 		return user.getEnrollactivities();
 	}
 	
-	public Set<User> getActivityPaticipators(@PathVariable("activity_id") Long activity_id){
+	public Set<User> getActivityPaticipators(Long activity_id){
 		Activity activity = activityRepository.findById(activity_id);
 		return activity.getEnrollusers();
 	}
@@ -178,6 +178,160 @@ public class ActivityService {
 		catch(Exception e){
 			return false;
 		}		
+		return true;	
+	}
+	
+	/**
+	 * get collected activities
+	 * @param principal
+	 * @return
+	 */
+	public Set<Activity> getUserCollectedActivities(String user_mobile){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[getUserCollectedActivities] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		return user.getCollectactivities();
+	}
+	
+	/**
+	 * get collecting user list of an activity 
+	 * @param activity_id
+	 * @return
+	 */
+	public Set<User> getActivityCollectingUsers(Long activity_id){
+		Activity activity = activityRepository.findById(activity_id);
+		if (activity == null){
+			logger.error("[getActivityCollectingUsers] activity: " + activity_id + "doesn't exist.");
+			throw new ActivityNotFoundException(activity_id);
+		}
+		return activity.getCollectusers();
+	}
+	
+	/**
+	 * Add User collected activity
+	 * @param principal
+	 * @param activity_id
+	 * @return
+	 */
+	public Boolean addUserCollectedActivity(String user_mobile , Long activity_id){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[addUserCollectedActivity] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		Activity activity = activityRepository.findById(activity_id);	
+		if(activity == null){
+			logger.error("[addUserCollectedActivity] activity: " + activity_id + "doesn't exist.");
+			throw new ActivityNotFoundException(activity_id);
+		}
+		try{
+			activity.getCollectusers().add(user);
+			activityRepository.save(activity);
+		}
+		catch(Exception e){
+			return false;
+		}		
+		return true;	
+	}
+	
+	/**
+	 * delete user conllected activity
+	 * @param principal
+	 * @param activity_id
+	 * @return
+	 */
+	public Boolean delUserCollectedActivity(String user_mobile , Long activity_id){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[delUserCollectedActivity] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		Activity activity = activityRepository.findById(activity_id);
+		if(activity == null){
+			logger.error("[delUserCollectedActivity] activity: " + activity_id + "doesn't exist.");
+			throw new ActivityNotFoundException(activity_id);
+		}
+		try{
+			activity.getCollectusers().remove(user);
+			activityRepository.save(activity);
+		}
+		catch(Exception e){
+			return false;
+		}		
+		return true;	
+	}
+	
+	
+	/**
+	 * get user watched organizations
+	 * @param principal
+	 * @return
+	 */
+	public Set<Organization> getUserWatchedOrganizations(String user_mobile){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[getOrganizationsNameByUser] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		return user.getOrganizations();
+		
+	}
+	
+	/**
+	 * get organization watching users
+	 * @param principal
+	 * @return
+	 */
+	public Set<User> getOrganizationWatchingUsers(String org_mobile){
+		Organization organization = organizationRepository.findByMobile(org_mobile);
+		if (organization == null){
+			logger.error("[getOrganizationWatchingUsers] organization: " + org_mobile + "doesn't exist.");
+			throw new OrganizationNotFoundException(org_mobile);
+		}
+		return organization.getUsers();
+	}
+	
+	public Boolean addUserWatchedOrganization(String user_mobile, Long organization_id){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[addUserEnrollOrganization] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		Organization organization = organizationRepository.findById(organization_id);	
+		if (organization == null){
+			logger.error("[addUserEnrollOrganization] organization id: " + organization_id + "doesn't exist.");
+			throw new OrganizationNotFoundException(organization_id);
+		}
+		try{
+			organization.getUsers().add(user);
+			organizationRepository.save(organization);
+		}
+		catch(Exception e){
+			return false;
+		}
+		return true;	
+	}
+	
+	public Boolean delUserWatchedOrganization(String user_mobile, Long organization_id){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[delUserEnrollOrganization] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		Organization organization = organizationRepository.findById(organization_id);
+		if (organization == null){
+			logger.error("[delUserEnrollOrganization] organization id: " + organization_id + "doesn't exist.");
+			throw new OrganizationNotFoundException(organization_id);
+		}
+		try{
+			organization.getUsers().remove(user);
+			organizationRepository.save(organization);
+		}
+		catch(Exception e){
+			return false;
+		}
 		return true;	
 	}
 	

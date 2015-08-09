@@ -25,22 +25,22 @@ public class AccountController {
 	AccountService userAccountService;
 	
 	@RequestMapping(value="/signup/user",method=RequestMethod.POST)  
-    public ResponseEntity<Boolean> addUserAccount(@RequestBody SignUpInfo postclass) {  
+    public ResponseEntity<String> addUserAccount(@RequestBody SignUpInfo postclass) {  
 		return new Result(userAccountService.addUserAccount(postclass)).getResponseResult();
 	}
 	
 	@RequestMapping(value="/signup/user",method=RequestMethod.PUT)  
-    public ResponseEntity<Boolean> updateUserAccount(@RequestBody SignUpInfo postclass) { 
+    public ResponseEntity<String> updateUserAccount(@RequestBody SignUpInfo postclass) { 
 		return new Result(userAccountService.updateUserAccount(postclass)).getResponseResult();
 	}
 	
 	@RequestMapping(value="/signup/organization",method=RequestMethod.POST)  
-    public ResponseEntity<Boolean> addSponsorAccount(@RequestBody SignUpInfo postclass) {  
+    public ResponseEntity<String> addSponsorAccount(@RequestBody SignUpInfo postclass) {  
 		return new Result(userAccountService.addSponsorAccount(postclass)).getResponseResult();
 	}
 	
 	@RequestMapping(value="/signup/organization",method=RequestMethod.PUT)  
-    public ResponseEntity<Boolean> updateSponsorAccount(@RequestBody SignUpInfo postclass) {  
+    public ResponseEntity<String> updateSponsorAccount(@RequestBody SignUpInfo postclass) {  
 		return new Result(userAccountService.updateSponsorAccount(postclass)).getResponseResult();
 	}
 	
