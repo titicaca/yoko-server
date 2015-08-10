@@ -16,6 +16,7 @@ import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.repository.AccountRepository;
 import com.fifteentec.yoko.server.repository.OrganizationRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 @Service
 public class AccountService {
@@ -29,7 +30,7 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 	@Autowired
 	private OrganizationRepository organizationRepository;
 	
-    public Boolean addUserAccount(SignUpInfo postclass) {  
+    public ResponseResult addUserAccount(SignUpInfo postclass) {  
 		Account account = new Account();
 		account.setUsername(postclass.getRole_mobile());
 		account.setPassword(postclass.getPassword());
@@ -38,7 +39,7 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
         }
         catch(Exception e){
         	logger.error("[addUserAccount] accountRepository cannot save user: " + account.getUsername() + "; " + e.getMessage());
-        	return false;
+        	return new ResponseResult(false, e.toString());
         }
         User user = new User();
         user.setNickname(postclass.getName());
@@ -48,13 +49,13 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
         }
         catch(Exception e){
         	logger.error("[addUserAccount] userRepository cannot save user: " + user.getMobile() + "; " + e.getMessage());
-        	return false;
+        	return new ResponseResult(false, e.toString());
         }
         logger.info("[addUserAccount] userRepository saved user: " + user.getMobile() );
-        return true;
+        return new ResponseResult(true);
 	}
 	
-    public Boolean updateUserAccount(SignUpInfo postclass) {  
+    public ResponseResult updateUserAccount(SignUpInfo postclass) {  
 		Account account = accountRepository.findByUsername(postclass.getRole_mobile());
 		account.setPassword(postclass.getPassword());
         try{
@@ -62,13 +63,13 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
         }
         catch(Exception e){
         	logger.error("[updateUserAccount] accountRepository cannot save account: " + account.getUsername() + "; " + e.getMessage());
-        	return false;
+        	return new ResponseResult(false, e.toString());
         }
         logger.info("[updateUserAccount] accountRepository saved account: " + account.getUsername() );
-        return true;
+        return new ResponseResult(true);
 	}
 	
-    public Boolean addSponsorAccount(SignUpInfo postclass) {  
+    public ResponseResult addSponsorAccount(SignUpInfo postclass) {  
 		Account account = new Account();
 		account.setUsername(postclass.getRole_mobile());
 		account.setPassword(postclass.getPassword());
@@ -77,7 +78,7 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
         }
         catch(Exception e){
         	logger.error("[addSponsorAccount] accountRepository cannot save account: " + account.getUsername() + "; " + e.getMessage());
-        	return false;
+        	return new ResponseResult(false, e.toString());
         }
         Organization organization = new Organization();
         organization.setRealname(postclass.getName());
@@ -87,13 +88,13 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
         }
         catch(Exception e){
         	logger.error("[addSponsorAccount] organizationRepository cannot save org: " + organization.getMobile() + "; " + e.getMessage());
-        	return false;
+        	return new ResponseResult(false, e.toString());
         }
     	logger.info("[addSponsorAccount] organizationRepository saved org: " + organization.getMobile());
-        return true;
+    	return new ResponseResult(true);
 	}
 	
-    public Boolean updateSponsorAccount(SignUpInfo postclass) {  
+    public ResponseResult updateSponsorAccount(SignUpInfo postclass) {  
 		Account account = accountRepository.findByUsername(postclass.getRole_mobile());
 		account.setPassword(postclass.getPassword());
         try{
@@ -101,10 +102,10 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
         }
         catch(Exception e){
         	logger.error("[updateSponsorAccount] accountRepository cannot save account: " + account.getUsername() + "; " + e.getMessage());
-        	return false;
+        	return new ResponseResult(false, e.toString());
         }
     	logger.info("[updateSponsorAccount] accountRepository saved account: " + account.getUsername());
-        return true;
+    	return new ResponseResult(true);
 	}
     
     
@@ -118,13 +119,13 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 		return user;
 	}
 	
-	public Boolean updateUserInfo(String user_mobile, User postclass){
+	public ResponseResult updateUserInfo(String user_mobile, User postclass){
 	
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
 			logger.error("[updateUser] user: " + user_mobile + "doesn't exist.");
 //			throw new UserNotFoundException(principal.getName());
-			return false;
+			return new ResponseResult(false, "[updateUser] user: " + user_mobile + "doesn't exist.");
 		}
 		try{
 			user.setNickname(postclass.getNickname());
@@ -139,11 +140,11 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 		}
 		catch(Exception e){
 			logger.error("[updateUser] user: " + user_mobile + "cannot be saved by UserRepository.");
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
 		
 		logger.info("[updateUser] user: " + user_mobile + "updated.");
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	
@@ -157,7 +158,7 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 		return organization;
 	}
 	
-	public Boolean updateOrganizationInfo(String org_mobile, Organization postclass){
+	public ResponseResult updateOrganizationInfo(String org_mobile, Organization postclass){
 		Organization organization = organizationRepository.findByMobile(org_mobile);
 		if (organization == null){
 			logger.error("[updateOrganization] organization: " + org_mobile + "doesn't exist.");
@@ -177,11 +178,11 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 		}
 		catch(Exception e){
 			logger.error("[updateOrganization] organization: " + org_mobile + "cannot be saved by OrganizationRepository.");
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
 		
 		logger.info("[updateOrganization] organization: " + org_mobile + "updated.");
-		return true;
+		return new ResponseResult(true);
 	}
 
 }

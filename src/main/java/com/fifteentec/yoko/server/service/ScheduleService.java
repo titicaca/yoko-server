@@ -12,6 +12,7 @@ import com.fifteentec.yoko.server.model.Schedule;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.repository.ScheduleRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 @Service
 public class ScheduleService {
@@ -34,7 +35,7 @@ public class ScheduleService {
 		return schedules;
 	}
 	
-	public Boolean addSchedule(String user_mobile, Schedule postclass){
+	public ResponseResult addSchedule(String user_mobile, Schedule postclass){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addSchedule] user:" + user_mobile + "doesn't exist; "  );
@@ -57,9 +58,9 @@ public class ScheduleService {
 			scheduleRepository.save(schedule);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 
 }

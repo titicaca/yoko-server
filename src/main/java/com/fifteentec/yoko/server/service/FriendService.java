@@ -14,7 +14,6 @@ import com.fifteentec.yoko.server.exception.FriendTagNotFoundException;
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
 import com.fifteentec.yoko.server.model.Account;
-import com.fifteentec.yoko.server.model.Result;
 import com.fifteentec.yoko.server.model.Tag;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.model.UserFriendRelation;
@@ -23,6 +22,7 @@ import com.fifteentec.yoko.server.repository.TagRepository;
 import com.fifteentec.yoko.server.repository.UserFriendRelationRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
 import com.fifteentec.yoko.server.repository.UserRequestFriendRepository;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 @Service
 public class FriendService {
@@ -44,14 +44,14 @@ public class FriendService {
 	 * @param friend_id
 	 * @return
 	 */
-	public Boolean addUserFriendRequest(String user_mobile , Long friend_id){
+	public ResponseResult addUserFriendRequest(String user_mobile , Long friend_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addUserFriendRequest] user:" + user_mobile + "doesn't exist; "  );
 			throw new UserNotFoundException(user_mobile);
 		}
 		if(userRequestFriendRepository.findByUser_idAndFriend_id(user.getId(), friend_id)!=null) 
-			return false;
+			return new ResponseResult(false, "request doesn't exist");
 		UserRequestFriend userRequestFriend = new UserRequestFriend();
 		try{
 			userRequestFriend.setUser(user);
@@ -59,9 +59,9 @@ public class FriendService {
 			userRequestFriendRepository.save(userRequestFriend);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class FriendService {
 	 * @param friend_id
 	 * @return
 	 */
-	public Boolean delFriendRelation(String user_mobile , Long friend_id){
+	public ResponseResult delFriendRelation(String user_mobile , Long friend_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[delFriendRelation] user:" + user_mobile + "doesn't exist; "  );
@@ -85,9 +85,9 @@ public class FriendService {
 			userFriendRelationRepository.delete(userFriendRelation);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class FriendService {
 	 * @param friend_id
 	 * @return
 	 */
-	public Boolean acceptUserFriendRequest(String user_mobile, Long friend_id){
+	public ResponseResult acceptUserFriendRequest(String user_mobile, Long friend_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[updateUserRequestFriend] user:" + user_mobile + "doesn't exist; "  );
@@ -117,9 +117,9 @@ public class FriendService {
 			userFriendRelationRepository.save(userFriendRelation2);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	/**
@@ -128,7 +128,7 @@ public class FriendService {
 	 * @param user_id
 	 * @return
 	 */
-	public Boolean rejectUserRequestFriend(String user_mobile, Long friend_id){
+	public ResponseResult rejectUserRequestFriend(String user_mobile, Long friend_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[rejectUserRequestFriend] user:" + user_mobile + "doesn't exist; "  );
@@ -140,9 +140,9 @@ public class FriendService {
 			userRequestFriendRepository.delete(userRequestFriend);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public class FriendService {
 	 * @param postclass
 	 * @return
 	 */
-	public Boolean addNewTag(String user_mobile, Tag postclass){
+	public ResponseResult addNewTag(String user_mobile, Tag postclass){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addNewTag] user:" + user_mobile + "doesn't exist; "  );
@@ -164,9 +164,9 @@ public class FriendService {
 			tagRepository.save(tag);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	/**
@@ -176,7 +176,7 @@ public class FriendService {
 	 * @param tag_id
 	 * @return
 	 */
-	public Boolean updateTagName(String user_mobile, Tag postclass, Long tag_id){
+	public ResponseResult updateTagName(String user_mobile, Tag postclass, Long tag_id){
 		Tag tag = tagRepository.findById(tag_id);
 		if(tag == null){
 			logger.error("[updateTag] tag:" + tag_id + "doesn't exist; "  );
@@ -187,9 +187,9 @@ public class FriendService {
 			tagRepository.save(tag);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	/**
@@ -199,7 +199,7 @@ public class FriendService {
 	 * @param friend_id
 	 * @return
 	 */
-	public Boolean addTaggedFriend(String user_mobile, Long tag_id, Long friend_id){
+	public ResponseResult addTaggedFriend(String user_mobile, Long tag_id, Long friend_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addTaggedFriend] user:" + user_mobile + "doesn't exist; "  );
@@ -219,9 +219,9 @@ public class FriendService {
 			tag.getUserFriendRelations().add(userFriendRelation);
 			tagRepository.save(tag);
 		}catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	/**
@@ -231,7 +231,7 @@ public class FriendService {
 	 * @param friend_id
 	 * @return
 	 */
-	public Boolean delTaggedFriend(String user_mobile, Long tag_id, Long friend_id){
+	public ResponseResult delTaggedFriend(String user_mobile, Long tag_id, Long friend_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addTaggedFriend] user:" + user_mobile + "doesn't exist; "  );
@@ -251,9 +251,9 @@ public class FriendService {
 			tag.getUserFriendRelations().remove(userFriendRelation);
 			tagRepository.save(tag);
 		}catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;
+		return new ResponseResult(true);
 	}
 	
 	/**

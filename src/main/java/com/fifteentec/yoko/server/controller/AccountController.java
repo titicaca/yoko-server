@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.service.AccountService;
+import com.fifteentec.yoko.server.util.JsonConverterUtil;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 
 @RestController  
@@ -25,23 +27,23 @@ public class AccountController {
 	AccountService userAccountService;
 	
 	@RequestMapping(value="/signup/user",method=RequestMethod.POST)  
-    public ResponseEntity<String> addUserAccount(@RequestBody SignUpInfo postclass) {  
-		return new Result(userAccountService.addUserAccount(postclass)).getResponseResult();
+    public ResponseResult addUserAccount(@RequestBody SignUpInfo postclass) {  
+		return userAccountService.addUserAccount(postclass);
 	}
 	
 	@RequestMapping(value="/signup/user",method=RequestMethod.PUT)  
-    public ResponseEntity<String> updateUserAccount(@RequestBody SignUpInfo postclass) { 
-		return new Result(userAccountService.updateUserAccount(postclass)).getResponseResult();
+    public ResponseResult updateUserAccount(@RequestBody SignUpInfo postclass) { 
+		return userAccountService.updateUserAccount(postclass);
 	}
 	
 	@RequestMapping(value="/signup/organization",method=RequestMethod.POST)  
-    public ResponseEntity<String> addSponsorAccount(@RequestBody SignUpInfo postclass) {  
-		return new Result(userAccountService.addSponsorAccount(postclass)).getResponseResult();
+    public ResponseResult addSponsorAccount(@RequestBody SignUpInfo postclass) {  
+		return userAccountService.addSponsorAccount(postclass);
 	}
 	
 	@RequestMapping(value="/signup/organization",method=RequestMethod.PUT)  
-    public ResponseEntity<String> updateSponsorAccount(@RequestBody SignUpInfo postclass) {  
-		return new Result(userAccountService.updateSponsorAccount(postclass)).getResponseResult();
+    public ResponseResult updateSponsorAccount(@RequestBody SignUpInfo postclass) {  
+		return userAccountService.updateSponsorAccount(postclass);
 	}
 	
 }

@@ -16,10 +16,10 @@ import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.Account;
 import com.fifteentec.yoko.server.model.Activity;
 import com.fifteentec.yoko.server.model.Organization;
-import com.fifteentec.yoko.server.model.Result;
 import com.fifteentec.yoko.server.repository.ActivityRepository;
 import com.fifteentec.yoko.server.repository.OrganizationRepository;
 import com.fifteentec.yoko.server.service.AccountService;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 @RestController  
 @RequestMapping("/organization")  
@@ -59,14 +59,12 @@ public class OrganizationController {
 	 * @return Boolean f
 	 */
 	@RequestMapping(value="/orginfo", method=RequestMethod.PUT)
-	public ResponseEntity<String> updateOrganization(Principal principal ,@RequestBody Organization postclass){
+	public ResponseResult updateOrganization(Principal principal ,@RequestBody Organization postclass){
 		if(!Account.findRole(principal.getName()).equals("1")) {
 			logger.error("[updateOrganization] org: "+ principal.getName() + " permission denied");
 			throw new PermissionErrorException();
 		}
-		Boolean result = accountService.updateOrganizationInfo(Account.findMobile(principal.getName()), postclass);
-		
-		return new Result(result).getResponseResult();
+		return accountService.updateOrganizationInfo(Account.findMobile(principal.getName()), postclass);
 	}
 	
 	

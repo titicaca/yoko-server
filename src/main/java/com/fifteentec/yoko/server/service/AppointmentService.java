@@ -17,6 +17,7 @@ import com.fifteentec.yoko.server.model.UserAppointmentRelation;
 import com.fifteentec.yoko.server.repository.AppointmentRepository;
 import com.fifteentec.yoko.server.repository.UserAppointmentRelationRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 @Service
 public class AppointmentService {
@@ -62,7 +63,7 @@ public class AppointmentService {
 		}
 	}
 	
-	public Boolean addHostAppointment(String user_mobile,  Appointment postclass){
+	public ResponseResult addHostAppointment(String user_mobile,  Appointment postclass){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addHostAppointment] user:" + user_mobile + "doesn't exist; "  );
@@ -83,10 +84,10 @@ public class AppointmentService {
 		}
 		catch(Exception e){
 			logger.error("[addHostAppointment] user:" + user_mobile + "cannot add an appointment");
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
 		logger.info("[addHostAppointment] user:" + user_mobile + "added an appointment named: " + postclass.getName()  );
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
 	public Set<Appointment> getUserAllEnrollAppointments(String user_mobile){
@@ -100,7 +101,7 @@ public class AppointmentService {
 		return appointments;
 	}
 	
-	public Boolean inviteUserAppointment(String user_mobile, Long invitee_user_id, Long appointment_id){
+	public ResponseResult inviteUserAppointment(String user_mobile, Long invitee_user_id, Long appointment_id){
 		User user = userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[getUserAllEnrollAppointments] user:" + user_mobile + "doesn't exist; "  );
@@ -108,9 +109,10 @@ public class AppointmentService {
 		}
 		Appointment appointment = appointmentRepository.findById(appointment_id);
 		if(appointment.getUser() != user)
-			return false;
+			return new ResponseResult(false, "user is not the owner");
 		if(userAppointmentRelationRepository.findByUser_idAndAppointment_id(invitee_user_id,appointment_id)!=null)
-			return false;
+			return new ResponseResult(false, "user has already been invited.");
+		
 		UserAppointmentRelation userAppointmentRelation = new UserAppointmentRelation();
 		
 		try{
@@ -119,12 +121,12 @@ public class AppointmentService {
 			userAppointmentRelationRepository.save(userAppointmentRelation);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
-	public Boolean updateUserAppointmentRelationStatus(Long user_id, Long appointment_id, int status){
+	public ResponseResult updateUserAppointmentRelationStatus(Long user_id, Long appointment_id, int status){
 		UserAppointmentRelation userAppointmentRelation = 
 				userAppointmentRelationRepository.findByUser_idAndAppointment_id(user_id, appointment_id);
 		
@@ -133,10 +135,10 @@ public class AppointmentService {
 			userAppointmentRelationRepository.save(userAppointmentRelation);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
 			
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
 	

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.service.AccountService;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 @RestController  
 @RequestMapping("/user")  
@@ -44,12 +45,12 @@ public class UserController {
 	 * @return boolean
 	 */
 	@RequestMapping(value="/userinfo", method=RequestMethod.PUT)
-	public ResponseEntity<String> updateUser(Principal principal, @RequestBody User postclass){
+	public ResponseResult updateUser(Principal principal, @RequestBody User postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) {
 			logger.error("[updateUser] user: "+ principal.getName() + " permission denied");
 			throw new PermissionErrorException();
 		}
-		return new Result(accountService.updateUserInfo(Account.findMobile(principal.getName()), postclass)).getResponseResult();
+		return accountService.updateUserInfo(Account.findMobile(principal.getName()), postclass);
 	}
 	
 

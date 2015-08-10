@@ -17,6 +17,7 @@ import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.repository.ActivityRepository;
 import com.fifteentec.yoko.server.repository.OrganizationRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 @Service
 public class ActivityService {
@@ -77,7 +78,7 @@ public class ActivityService {
 		return organization.getActivities();
 	}
 	
-	public Boolean addOrganizationActivity(String org_mobile, Activity postclass){
+	public ResponseResult addOrganizationActivity(String org_mobile, Activity postclass){
 		Organization organization = organizationRepository.findByMobile(org_mobile);
 		if (organization == null){
 			logger.error("[addActivity] organization: " + org_mobile + "doesn't exist.");
@@ -99,10 +100,10 @@ public class ActivityService {
 		catch(Exception e){
 			logger.error("[addActivity] organization: " + org_mobile + 
 					"; activity: " + org_mobile + "cannot be saved by ActivityRepository.");
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
 		logger.info("[addActivity] organization: " + org_mobile + "post activity " + postclass.getName());
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
 	public Set<Activity> getUserEnrollActivities(String user_mobile){
@@ -126,7 +127,7 @@ public class ActivityService {
 	 * @param activity_id
 	 * @return
 	 */
-	public Boolean enrollUserInActivity(String user_mobile ,Long activity_id){
+	public ResponseResult enrollUserInActivity(String user_mobile ,Long activity_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
 			logger.error("[enrollUserInActivity] user: " + user_mobile + "doesn't exist.");
@@ -142,9 +143,9 @@ public class ActivityService {
 			activityRepository.save(activity);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}		
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
 	/**
@@ -153,7 +154,7 @@ public class ActivityService {
 	 * @param activity_id
 	 * @return
 	 */
-	public Boolean delUserFromActivity(String user_mobile ,Long activity_id){
+	public ResponseResult delUserFromActivity(String user_mobile ,Long activity_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
 			logger.error("[delUserFromActivity] user: " + user_mobile + "doesn't exist.");
@@ -169,9 +170,9 @@ public class ActivityService {
 			activityRepository.save(activity);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}		
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
 	/**
@@ -208,7 +209,7 @@ public class ActivityService {
 	 * @param activity_id
 	 * @return
 	 */
-	public Boolean addUserCollectedActivity(String user_mobile , Long activity_id){
+	public ResponseResult addUserCollectedActivity(String user_mobile , Long activity_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
 			logger.error("[addUserCollectedActivity] user: " + user_mobile + "doesn't exist.");
@@ -224,9 +225,9 @@ public class ActivityService {
 			activityRepository.save(activity);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}		
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
 	/**
@@ -235,7 +236,7 @@ public class ActivityService {
 	 * @param activity_id
 	 * @return
 	 */
-	public Boolean delUserCollectedActivity(String user_mobile , Long activity_id){
+	public ResponseResult delUserCollectedActivity(String user_mobile , Long activity_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
 			logger.error("[delUserCollectedActivity] user: " + user_mobile + "doesn't exist.");
@@ -251,9 +252,9 @@ public class ActivityService {
 			activityRepository.save(activity);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}		
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
 	
@@ -286,7 +287,7 @@ public class ActivityService {
 		return organization.getUsers();
 	}
 	
-	public Boolean addUserWatchedOrganization(String user_mobile, Long organization_id){
+	public ResponseResult addUserWatchedOrganization(String user_mobile, Long organization_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
 			logger.error("[addUserEnrollOrganization] user: " + user_mobile + "doesn't exist.");
@@ -302,12 +303,12 @@ public class ActivityService {
 			organizationRepository.save(organization);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
-	public Boolean delUserWatchedOrganization(String user_mobile, Long organization_id){
+	public ResponseResult delUserWatchedOrganization(String user_mobile, Long organization_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
 			logger.error("[delUserEnrollOrganization] user: " + user_mobile + "doesn't exist.");
@@ -323,9 +324,9 @@ public class ActivityService {
 			organizationRepository.save(organization);
 		}
 		catch(Exception e){
-			return false;
+			return new ResponseResult(false, e.toString());
 		}
-		return true;	
+		return new ResponseResult(true);	
 	}
 	
 }

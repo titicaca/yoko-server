@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.Account;
 import com.fifteentec.yoko.server.model.Activity;
-import com.fifteentec.yoko.server.model.Result;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.service.ActivityService;
-import com.fifteentec.yoko.server.util.ContainerToJsonStringConverter;
+import com.fifteentec.yoko.server.util.JsonConverterUtil;
+import com.fifteentec.yoko.server.util.ResponseResult;
 
 @RestController  
 @RequestMapping("/organization/myactivity")  
@@ -43,7 +43,7 @@ public class OrganizationActivityController {
 	@RequestMapping(value="/{activity_id}/participators",method=RequestMethod.GET)
 	public String getUserByActivity(@PathVariable("activity_id") Long activity_id){
 		Set<User> users = activityService.getActivityPaticipators(activity_id);
-		return ContainerToJsonStringConverter.convertSetToJsonString(users);
+		return JsonConverterUtil.convertSetToJsonString(users);
 	}
 	
 	
@@ -55,18 +55,17 @@ public class OrganizationActivityController {
 			throw new PermissionErrorException();
 		}
 		Set<Activity> activities = activityService.getActivitiesByOrganization(Account.findMobile(principal.getName()));
-		return ContainerToJsonStringConverter.convertSetToJsonString(activities);		
+		return JsonConverterUtil.convertSetToJsonString(activities);		
 	}
 	
 
 	@RequestMapping(value="/host", method=RequestMethod.POST)
-	public ResponseEntity<String> addActivity(Principal principal, @RequestBody Activity postclass){
+	public ResponseResult addActivity(Principal principal, @RequestBody Activity postclass){
 		if(!Account.findRole(principal.getName()).equals("1")) {
 			logger.error("[addActivity] org: "+ principal.getName() + " permission denied");
 			throw new PermissionErrorException();
 		}
-		Boolean result = activityService.addOrganizationActivity(Account.findMobile(principal.getName()), postclass);
-		return new Result(result).getResponseResult();
+		return activityService.addOrganizationActivity(Account.findMobile(principal.getName()), postclass);
 	}
 	
 
@@ -74,13 +73,13 @@ public class OrganizationActivityController {
 	public String getActivityCollectingUsers(Principal principal, @PathVariable("activity_id") Long activity_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<User> users = activityService.getActivityCollectingUsers(activity_id);
-		return ContainerToJsonStringConverter.convertSetToJsonString(users);
+		return JsonConverterUtil.convertSetToJsonString(users);
 	}
 	
 	@RequestMapping(value="/watched/users",method=RequestMethod.GET)
 	public String getOrganizationWatchingUsers(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("1")) throw new PermissionErrorException();
 		Set<User> users = activityService.getOrganizationWatchingUsers(Account.findMobile(principal.getName()));
-		return ContainerToJsonStringConverter.convertSetToJsonString(users);
+		return JsonConverterUtil.convertSetToJsonString(users);
 	}
 }
