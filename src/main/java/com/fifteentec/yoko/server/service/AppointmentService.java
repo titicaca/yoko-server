@@ -2,21 +2,16 @@ package com.fifteentec.yoko.server.service;
 
 
 
-import java.security.Principal;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fifteentec.yoko.server.exception.AppointmentNotFoundException;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
 import com.fifteentec.yoko.server.model.Appointment;
-import com.fifteentec.yoko.server.model.Result;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.model.UserAppointmentRelation;
 import com.fifteentec.yoko.server.repository.AppointmentRepository;

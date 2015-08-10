@@ -1,102 +1,77 @@
 package com.fifteentec.yoko.server.controller;
 
 import java.security.Principal;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
-import com.fifteentec.yoko.server.repository.UserFriendRelationRepository;
-import com.fifteentec.yoko.server.repository.UserRepository;
-import com.fifteentec.yoko.server.repository.UserRequestFriendRepository;
+import com.fifteentec.yoko.server.service.FriendService;
+import com.fifteentec.yoko.server.util.ContainerToJsonStringConverter;
 
 @RestController  
-@RequestMapping("/friend")  
+@RequestMapping("/user/myfriend")  
 @EnableAutoConfiguration
 
 public class FriendController {
 	
 	@Autowired
-	UserRepository userRepository;
-	@Autowired
-	UserRequestFriendRepository userRequestFriendRepository;
-	@Autowired
-	UserFriendRelationRepository userFriendRelationRepository;
+	FriendService friendService;
 	
-	@RequestMapping(value="/{friend_id}",method=RequestMethod.POST)
-	public Result addUserRequestFriend(Principal principal , @PathVariable("friend_id") Long friend_id){
+	
+	@RequestMapping(value="/request/{friend_id}",method=RequestMethod.POST)
+	public ResponseEntity<String> addUserRequestFriend(Principal principal , @PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
-		if(userRequestFriendRepository.findByUser_idAndFriend_id(user.getId(), friend_id)!=null) return new Result(false);
-		
-		UserRequestFriend userRequestFriend = new UserRequestFriend();
-		try{
-			userRequestFriend.setUser(user);
-			userRequestFriend.setFriend(userRepository.findById(friend_id));
-			userRequestFriendRepository.save(userRequestFriend);
-		}
-		catch(Exception e){
-			return new Result(false);
-		}
-		return new Result(true);
+		Boolean r = friendService.addUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
+		return new Result(r).getResponseResult();
 	}
 	
-	@RequestMapping(value="/{friend_id}",method=RequestMethod.DELETE)
-	public Result delFriend(Principal principal , @PathVariable("friend_id") Long friend_id){
+	@RequestMapping(value="/request/{friend_id}",method=RequestMethod.DELETE)
+	public ResponseEntity<String> delFriend(Principal principal , @PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		User user =userRepository.findByMobile(Account.findMobile(principal.getName()));
-		
-		UserFriendRelation userFriendRelation = userFriendRelationRepository.findByUser_idAndFriend_id(user.getId(), friend_id);
-		
-		try{
-			userFriendRelationRepository.delete(userFriendRelation);
-		}
-		catch(Exception e){
-			return new Result(false);
-		}
-		return new Result(true);
+		Boolean r = friendService.delFriendRelation(Account.findMobile(principal.getName()), friend_id);
+		return new Result(r).getResponseResult();
 	}
 	
-	@RequestMapping(value="response/{user_id}",method=RequestMethod.PUT)
-	public Result updateUserRequestFriend(Principal principal,@PathVariable("user_id") Long user_id){
+	@RequestMapping(value="/response/{friend_id}",method=RequestMethod.PUT)
+	public ResponseEntity<String> responseUserRequestFriend(Principal principal,@PathVariable("user_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		User friend =userRepository.findByMobile(Account.findMobile(principal.getName()));
-		
-		try{
-			UserRequestFriend userRequestFriend = userRequestFriendRepository.findByUser_idAndFriend_id(user_id, friend.getId());
-			userRequestFriendRepository.delete(userRequestFriend);
-		
-			UserFriendRelation userFriendRelation = new UserFriendRelation();	
-			userFriendRelation.setUser(userRepository.findById(user_id));
-			userFriendRelation.setFriend(friend);
-			userFriendRelationRepository.save(userFriendRelation);
-		
-			UserFriendRelation userFriendRelation2 = new UserFriendRelation();	
-			userFriendRelation2.setUser(friend);
-			userFriendRelation2.setFriend(userRepository.findById(user_id));
-			userFriendRelationRepository.save(userFriendRelation2);
-		}
-		catch(Exception e){
-			return new Result(false);
-		}
-		return new Result(true);
+		Boolean r = friendService.acceptUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
+		return new Result(r).getResponseResult();
 	}
 	
-	@RequestMapping(value="response/{user_id}",method=RequestMethod.DELETE)
-	public Result delUserRequestFriend(Principal principal,@PathVariable("user_id") Long user_id){
+	@RequestMapping(value="/response/{friend_id}",method=RequestMethod.DELETE)
+	public ResponseEntity<String> delUserRequestFriend(Principal principal,@PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		User friend =userRepository.findByMobile(Account.findMobile(principal.getName()));
-		
-		UserRequestFriend userRequestFriend = userRequestFriendRepository.findByUser_idAndFriend_id(user_id, friend.getId());
-		try{
-			userRequestFriendRepository.delete(userRequestFriend);
-		}
-		catch(Exception e){
-			return new Result(false);
-		}
-		return new Result(true);
+		Boolean r = friendService.rejectUserRequestFriend(Account.findMobile(principal.getName()), friend_id);
+		return new Result(r).getResponseResult();
+	}
+	
+	@RequestMapping(value="/{friend_id}/tags",method=RequestMethod.GET)
+	public String getFriendTags(Principal principal, @PathVariable("friend_id") Long friend_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Set<Tag> tags = friendService.getFriendTags(Account.findMobile(principal.getName()), friend_id);
+		return ContainerToJsonStringConverter.convertSetToJsonString(tags);	
+	}
+	
+	@RequestMapping(value="/{friend_id}/{tag_id}",method=RequestMethod.PUT)
+	public ResponseEntity<String> addTaggedFriend(Principal principal, @PathVariable("tag_id") Long tag_id, 
+			@PathVariable("friend_id") Long friend_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Boolean r = friendService.addTaggedFriend(Account.findMobile(principal.getName()), tag_id, friend_id);
+		return new Result(r).getResponseResult();
+	}
+	
+	@RequestMapping(value="/{friend_id}/{tag_id}",method=RequestMethod.DELETE)
+	public ResponseEntity<String> delTaggedFriend(Principal principal, @PathVariable("tag_id") Long tag_id, 
+			@PathVariable("friend_id") Long friend_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Boolean r = friendService.delTaggedFriend(Account.findMobile(principal.getName()), tag_id, friend_id);
+		return new Result(r).getResponseResult();
 	}
 
 }

@@ -1,8 +1,6 @@
 package com.fifteentec.yoko.server.controller;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
-import com.fifteentec.yoko.server.exception.UserNotFoundException;
 import com.fifteentec.yoko.server.model.*;
-import com.fifteentec.yoko.server.repository.UserRepository;
 import com.fifteentec.yoko.server.service.AccountService;
 
 @RestController  

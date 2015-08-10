@@ -1,24 +1,17 @@
 package com.fifteentec.yoko.server.service;
 
 
-import java.security.Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fifteentec.yoko.server.exception.OrganizationNotFoundException;
-import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
 import com.fifteentec.yoko.server.model.Account;
 import com.fifteentec.yoko.server.model.Organization;
 import com.fifteentec.yoko.server.model.SignUpInfo;
-import com.fifteentec.yoko.server.model.Result;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.repository.AccountRepository;
 import com.fifteentec.yoko.server.repository.OrganizationRepository;
