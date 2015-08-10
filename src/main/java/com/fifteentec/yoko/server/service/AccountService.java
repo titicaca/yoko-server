@@ -96,6 +96,11 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 	
     public ResponseResult updateSponsorAccount(SignUpInfo postclass) {  
 		Account account = accountRepository.findByUsername(postclass.getRole_mobile());
+		if (account == null){
+			logger.error("[getUser] user: " + postclass.getRole_mobile() + "doesn't exist.");
+	//TODO		
+			throw new UserNotFoundException(postclass.getRole_mobile());
+		}
 		account.setPassword(postclass.getPassword());
         try{
         	accountRepository.save(account);

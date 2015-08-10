@@ -15,7 +15,7 @@ import com.fifteentec.yoko.server.util.JsonConverterUtil;
 import com.fifteentec.yoko.server.util.ResponseResult;
 
 @RestController  
-@RequestMapping("/schedule")  
+@RequestMapping("/user/myschedule")  
 @EnableAutoConfiguration
 
 public class UserScheduleController {
@@ -24,7 +24,7 @@ public class UserScheduleController {
 	ScheduleService scheduleService;
 
 	
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(value="/schedules", method=RequestMethod.GET)
 	public String getSchedules(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<Schedule> schedules = scheduleService.getSchedules(Account.findMobile(principal.getName()));

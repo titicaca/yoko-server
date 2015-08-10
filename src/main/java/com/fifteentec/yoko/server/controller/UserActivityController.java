@@ -94,7 +94,7 @@ public class UserActivityController {
 	}
 	
 	
-	@RequestMapping(value="{activity_id}",method=RequestMethod.DELETE)
+	@RequestMapping(value="/enroll/{activity_id}",method=RequestMethod.DELETE)
 	public ResponseResult delUserEnrollActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return activityService.delUserFromActivity(Account.findMobile(principal.getName()), activity_id);

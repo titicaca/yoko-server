@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fifteentec.yoko.server.exception.AppointmentNotFoundException;
+import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
 import com.fifteentec.yoko.server.model.Appointment;
 import com.fifteentec.yoko.server.model.User;
@@ -126,7 +127,16 @@ public class AppointmentService {
 		return new ResponseResult(true);	
 	}
 	
-	public ResponseResult updateUserAppointmentRelationStatus(Long user_id, Long appointment_id, int status){
+	public ResponseResult updateUserAppointmentRelationStatus(String user_mobile, Long user_id, Long appointment_id, int status){
+		User user = userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[updateUserAppointmentRelationStatus] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+//		if(user.getId() != user_id){
+//			logger.error("[updateUserAppointmentRelationStatus] user:" + user_mobile + "has no permission; "  );
+//			throw new PermissionErrorException();
+//		}
 		UserAppointmentRelation userAppointmentRelation = 
 				userAppointmentRelationRepository.findByUser_idAndAppointment_id(user_id, appointment_id);
 		

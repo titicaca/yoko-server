@@ -50,8 +50,10 @@ public class FriendService {
 			logger.error("[addUserFriendRequest] user:" + user_mobile + "doesn't exist; "  );
 			throw new UserNotFoundException(user_mobile);
 		}
+		if(userFriendRelationRepository.findByUser_idAndFriend_id(user.getId(), friend_id)!=null)
+			return new ResponseResult(false,"relation already exist");
 		if(userRequestFriendRepository.findByUser_idAndFriend_id(user.getId(), friend_id)!=null) 
-			return new ResponseResult(false, "request doesn't exist");
+			return new ResponseResult(false, "request already exist");
 		UserRequestFriend userRequestFriend = new UserRequestFriend();
 		try{
 			userRequestFriend.setUser(user);
@@ -102,6 +104,10 @@ public class FriendService {
 			logger.error("[updateUserRequestFriend] user:" + user_mobile + "doesn't exist; "  );
 			throw new UserNotFoundException(user_mobile);
 		}
+		if(userFriendRelationRepository.findByUser_idAndFriend_id(friend_id, user.getId())!=null)
+			return new ResponseResult(false,"relation already exist");
+		if(userRequestFriendRepository.findByUser_idAndFriend_id(friend_id, user.getId())==null) 
+			return new ResponseResult(false, "request doesn't exist");
 		try{
 			UserRequestFriend userRequestFriend = userRequestFriendRepository.findByUser_idAndFriend_id(friend_id, user.getId());
 			userRequestFriendRepository.delete(userRequestFriend);
@@ -298,6 +304,20 @@ public class FriendService {
 			users.add(r.getFriend());
 		}
 		return users;
+	}
+	
+	public Set<User> getFriends(String user_mobile){
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[addTaggedFriend] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		Set<UserFriendRelation> userFriendRelations = userFriendRelationRepository.findByUser_id(user.getId());
+		Set<User> friends = new HashSet<User>();
+		for(UserFriendRelation r: userFriendRelations){
+			friends.add(r.getFriend());
+		}
+		return friends;
 	}
 	
 	

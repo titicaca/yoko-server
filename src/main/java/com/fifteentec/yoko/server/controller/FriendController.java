@@ -30,14 +30,14 @@ public class FriendController {
 		return  friendService.addUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
 	}
 	
-	@RequestMapping(value="/request/{friend_id}",method=RequestMethod.DELETE)
+	@RequestMapping(value="/{friend_id}",method=RequestMethod.DELETE)
 	public ResponseResult delFriend(Principal principal , @PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return friendService.delFriendRelation(Account.findMobile(principal.getName()), friend_id);
 	}
 	
 	@RequestMapping(value="/response/{friend_id}",method=RequestMethod.PUT)
-	public ResponseResult responseUserRequestFriend(Principal principal,@PathVariable("user_id") Long friend_id){
+	public ResponseResult responseUserRequestFriend(Principal principal,@PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return  friendService.acceptUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
 	}
@@ -67,6 +67,13 @@ public class FriendController {
 			@PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return friendService.delTaggedFriend(Account.findMobile(principal.getName()), tag_id, friend_id);
+	}
+	
+	@RequestMapping(value="/friends",method=RequestMethod.GET)
+	public String getFriends(Principal principal){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Set<User>friends =  friendService.getFriends(Account.findMobile(principal.getName()));
+		return JsonConverterUtil.convertSetToJsonString(friends);
 	}
 
 }

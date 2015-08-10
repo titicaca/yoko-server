@@ -28,7 +28,7 @@ public class UserAppointmentController {
 		return appointmentService.getHostAppointment(Account.findMobile(principal.getName()), appointment_id);
 	}
 	
-	@RequestMapping(value="/host/", method=RequestMethod.POST)
+	@RequestMapping(value="/host", method=RequestMethod.POST)
 	public ResponseResult addHostAppointment(Principal principal, @RequestBody Appointment postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return appointmentService.addHostAppointment(Account.findMobile(principal.getName()), postclass);
@@ -48,17 +48,17 @@ public class UserAppointmentController {
 		return JsonConverterUtil.convertSetToJsonString(appointments);	
 	}
 	
-	@RequestMapping(value="/enroll/", method=RequestMethod.POST)
-	public ResponseResult addUserAppointmentRelation(Principal principal , @RequestBody UserAndAppointment postclass){
+	@RequestMapping(value="/enroll/invite", method=RequestMethod.POST)
+	public ResponseResult inviteUserAppointment(Principal principal , @RequestBody UserAndAppointment postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return appointmentService.inviteUserAppointment(Account.findMobile(principal.getName()), 
 				postclass.getUser_id(), postclass.getAppointment_id());
 	}
 	
-	@RequestMapping(value="/enroll/",method=RequestMethod.PUT)
-	public ResponseResult updateUserAppointmentRelation(Principal principal, @RequestBody UserAndAppointment postclass){
+	@RequestMapping(value="/enroll/response",method=RequestMethod.PUT)
+	public ResponseResult updateUserAppointmentRelationStatus(Principal principal, @RequestBody UserAndAppointment postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		return appointmentService.updateUserAppointmentRelationStatus(postclass.getUser_id(), 
+		return appointmentService.updateUserAppointmentRelationStatus(Account.findMobile(principal.getName()), postclass.getUser_id(), 
 				postclass.getAppointment_id(), postclass.getStatus());	
 	}
 	

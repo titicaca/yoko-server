@@ -48,7 +48,7 @@ public class OrganizationActivityController {
 	
 	
 
-	@RequestMapping(value="host/activities",method=RequestMethod.GET)
+	@RequestMapping(value="/host/activities",method=RequestMethod.GET)
 	public String getActivitiesByOrganization(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("1")) {
 			logger.error("[getActivitiesByOrganization] org: "+ principal.getName() + " permission denied");
