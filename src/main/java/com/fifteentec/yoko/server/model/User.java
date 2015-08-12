@@ -52,6 +52,9 @@ public class User extends BaseModel{
 	@Column(name="sex")
 	private int sex; 
 	
+	@Column(name="location")
+	private String location;
+	
 	@Column(name="email")
     private String email;
 	
@@ -205,6 +208,14 @@ public class User extends BaseModel{
 	public void setSex(int sex) {
 		this.sex = sex;
 	}
+	
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
 
 	public String getEmail() {
 		return email;
@@ -311,38 +322,6 @@ public class User extends BaseModel{
 		this.appointments = appointments;
 	}
 
-//	public Set<Appointment> getEnrollappointments() {
-//		return enrollappointments;
-//	}
-//
-//	public void setEnrollappointments(Set<Appointment> enrollappointments) {
-//		this.enrollappointments = enrollappointments;
-//	}
-
-//	public Set<Appointment> getInviteappointments() {
-//		return inviteappointments;
-//	}
-//
-//	public void setInviteappointments(Set<Appointment> inviteappointments) {
-//		this.inviteappointments = inviteappointments;
-//	}
-
-//	public Set<User> getAddfriends() {
-//		return addfriends;
-//	}
-//
-//	public void setAddfriends(Set<User> addfriends) {
-//		this.addfriends = addfriends;
-//	}
-//
-//	public Set<User> getFriends() {
-//		return friends;
-//	}
-//
-//	public void setFriends(Set<User> friends) {
-//		this.friends = friends;
-//	}
-
 	public Set<UserAppointmentRelation> getUserAppointmentRelations() {
 		return userAppointmentRelations;
 	}
@@ -351,6 +330,46 @@ public class User extends BaseModel{
 		this.userAppointmentRelations = userAppointmentRelations;
 	}
 	
+	public Set<UserFriendRelation> getUserFriendRelations() {
+		return userFriendRelations;
+	}
+
+	public void setUserFriendRelations(Set<UserFriendRelation> userFriendRelations) {
+		this.userFriendRelations = userFriendRelations;
+	}
+
+	public Set<UserFriendRelation> getFriendUserRelations() {
+		return friendUserRelations;
+	}
+
+	public void setFriendUserRelations(Set<UserFriendRelation> friendUserRelations) {
+		this.friendUserRelations = friendUserRelations;
+	}
+
+	public Set<UserRequestFriend> getUserRequestFriends() {
+		return userRequestFriends;
+	}
+
+	public void setUserRequestFriends(Set<UserRequestFriend> userRequestFriends) {
+		this.userRequestFriends = userRequestFriends;
+	}
+
+	public Set<UserFriendRelation> getFriendUserRequest() {
+		return friendUserRequest;
+	}
+
+	public void setFriendUserRequest(Set<UserFriendRelation> friendUserRequest) {
+		this.friendUserRequest = friendUserRequest;
+	}
+
+	public Set<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(Set<Tag> tags) {
+		this.tags = tags;
+	}
+
 	public Set<Appointment> findAppointmentsByUserAppointmentRelations(){
 		Set<Appointment> appointments = new HashSet<Appointment>();
 		//Set<UserAppointmentRelation> userAppointmentRelations = getUserAppointmentRelations();

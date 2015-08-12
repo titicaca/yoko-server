@@ -75,6 +75,14 @@ public class FriendController {
 		Set<User>friends =  friendService.getFriends(Account.findMobile(principal.getName()));
 		return JsonConverterUtil.convertSetToJsonString(friends);
 	}
+	
+	@RequestMapping(value="/allinfo",method=RequestMethod.GET)
+	public String getFriendsAndTags(Principal principal){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		Set<FriendTags>friends =  friendService.getFriendsAndTags(Account.findMobile(principal.getName()));
+		return JsonConverterUtil.convertSetToJsonString(friends);
+	}
+
 
 }
 
