@@ -79,7 +79,7 @@ public class FriendController {
 	@RequestMapping(value="/allinfo",method=RequestMethod.GET)
 	public String getFriendsAndTags(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		Set<FriendTags>friends =  friendService.getFriendsAndTags(Account.findMobile(principal.getName()));
+		Set<UserFriendRelation>friends =  friendService.getFriendsAndTags(Account.findMobile(principal.getName()));
 		return JsonConverterUtil.convertSetToJsonString(friends);
 	}
 

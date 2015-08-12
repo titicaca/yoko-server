@@ -1,6 +1,5 @@
 package com.fifteentec.yoko.server.service;
 
-import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fifteentec.yoko.server.exception.FriendRelationNotFoundException;
 import com.fifteentec.yoko.server.exception.FriendTagNotFoundException;
-import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
-import com.fifteentec.yoko.server.model.Account;
-import com.fifteentec.yoko.server.model.FriendTags;
 import com.fifteentec.yoko.server.model.Tag;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.model.UserFriendRelation;
@@ -321,24 +317,18 @@ public class FriendService {
 		return friends;
 	}
 	
-	public Set<FriendTags> getFriendsAndTags(String user_mobile){
+	public Set<UserFriendRelation> getFriendsAndTags(String user_mobile){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addTaggedFriend] user:" + user_mobile + "doesn't exist; "  );
 			throw new UserNotFoundException(user_mobile);
 		}
 		Set<UserFriendRelation> userFriendRelations = userFriendRelationRepository.findByUser_id(user.getId());
-		Set<FriendTags> friends = new HashSet<FriendTags>();
-		for(UserFriendRelation r: userFriendRelations){
-			FriendTags friendTags = new FriendTags();
-			friendTags.setUser(r.getFriend());
-			friendTags.setTags(r.getTags());
-			friends.add(friendTags);
-		}
-		FriendTags friendTags = new FriendTags();
-		friendTags.setTags(user.getTags());
-		friends.add(friendTags);
-		return friends;
+		UserFriendRelation userFriendRelation = new UserFriendRelation();
+		userFriendRelation.setId(0l);
+		userFriendRelation.setTags(user.getTags());
+		userFriendRelations.add(userFriendRelation);
+		return userFriendRelations;
 	}
 
 

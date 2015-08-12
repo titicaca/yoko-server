@@ -36,14 +36,12 @@ public class UserFriendRelation {
 	
 	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.EAGER)
 	@JoinColumn(name="friend_id")
-	@JsonIgnore
 	private User friend;
 	
 	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinTable(name="TagUserFriendRelation",
 	joinColumns={@JoinColumn(name="user_friend_relation_id")},
 	inverseJoinColumns={@JoinColumn(name="tag_id")})
-	@JsonIgnore
 	private Set<Tag> tags;
 	
 	@Column(name="status",columnDefinition = "INT default 0")
