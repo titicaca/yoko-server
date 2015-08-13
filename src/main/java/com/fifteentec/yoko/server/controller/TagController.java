@@ -60,4 +60,38 @@ public class TagController {
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return friendService.delTaggedFriend(Account.findMobile(principal.getName()), tag_id, friend_id);
 	}
+	
+	@RequestMapping(value="/friendlist",method=RequestMethod.POST)
+	public ResponseResult addTagAndFriends(Principal principal,@RequestBody TagFriends postclass){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		return friendService.addTagAndFriends(Account.findMobile(principal.getName()), postclass.getTagname(),postclass.getFriendlist());
+	}
+	
+	@RequestMapping(value="/{tag_id}/friendlist",method=RequestMethod.PUT)
+	public ResponseResult updateTagAndFriends(Principal principal,@PathVariable("tag_id") Long tag_id,@RequestBody TagFriends postclass){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		return friendService.updateTagAndFriends(Account.findMobile(principal.getName()), tag_id,postclass.getFriendlist());
+	}
+}
+
+class TagFriends {
+	private String tagname;
+	private Set<User> friendlist;
+	
+	public String getTagname() {
+		return tagname;
+	}
+
+	public void setTagname(String tagname) {
+		this.tagname = tagname;
+	}
+
+	public Set<User> getFriendlist() {
+		return friendlist;
+	}
+	
+	public void setFriendlist(Set<User> friendlist) {
+		this.friendlist = friendlist;
+	}
+
 }

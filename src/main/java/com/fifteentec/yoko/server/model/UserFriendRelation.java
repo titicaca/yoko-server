@@ -100,7 +100,4 @@ public class UserFriendRelation {
 		this.tags = tags;
 	}
 	
-	
-	
-	
 }

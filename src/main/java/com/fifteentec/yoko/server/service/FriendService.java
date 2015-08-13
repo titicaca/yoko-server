@@ -330,6 +330,87 @@ public class FriendService {
 		userFriendRelations.add(userFriendRelation);
 		return userFriendRelations;
 	}
+	
+	public ResponseResult addTagAndFriends(String user_mobile, String tagname, Set<User> friendlist){
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[addTagAndFriends] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		Tag tag = new Tag();
+		tag.setTagname(tagname);
+		tag.setUser(user);
+		Set<UserFriendRelation> userFriendRelations = new HashSet<UserFriendRelation>();
+		for (User friend : friendlist) {
+			UserFriendRelation userFriendRelation = userFriendRelationRepository.findByUser_idAndFriend_id(user.getId(), friend.getId());
+			userFriendRelations.add(userFriendRelation);
+		}
+		tag.setUserFriendRelations(userFriendRelations);
+		try{
+			tag = tagRepository.save(tag);
+		}
+		catch(Exception e){
+			return new ResponseResult(false, e.toString());
+		}
+		
+		return new ResponseResult(true,tag.getId().toString());
+		
+	}
+	
+	public ResponseResult updateTagAndFriends(String user_mobile, Long tag_id, Set<User> friendlist){
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[updateTagAndFriends] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		Tag tag = tagRepository.findById(tag_id);
+		if(tag == null){
+			logger.error("[updateTagAndFriends] tag:" + tag_id + "doesn't exist; "  );
+			throw new FriendTagNotFoundException(tag_id);
+		}
+		Set<UserFriendRelation> userFriendRelations = new HashSet<UserFriendRelation>();
+		for (User friend : friendlist) {
+			UserFriendRelation userFriendRelation = userFriendRelationRepository.findByUser_idAndFriend_id(user.getId(), friend.getId());
+			userFriendRelations.add(userFriendRelation);
+		}
+		tag.setUserFriendRelations(userFriendRelations);
+		try{
+			tag = tagRepository.save(tag);
+		}
+		catch(Exception e){
+			return new ResponseResult(false, e.toString());
+		}
+		
+		return new ResponseResult(true,tag.getId().toString());
+	}
+	
+	public User getFriendInfo(String user_mobile, Long friend_id){
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[getFriendInfo] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		User friend = userFriendRelationRepository.findByUser_idAndFriend_id(user.getId(), friend_id).getFriend();
+		if(friend == null){
+			logger.error("[getFriendInfo] friend:" + friend_id.toString() + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		friend.setCollectnumber(friend.getCollectactivities().size());
+		friend.setEnrollnumber(friend.getEnrollactivities().size());
+		friend.setFriendnumber(userFriendRelationRepository.findByUser_id(friend_id).size());
+		return friend;
+	
+	}
+	
+	public User searchFriend(String user_mobile, String friend_mobile){
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[getFriendInfo] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		User friend = userRepository.findByMobile(friend_mobile);
+		return friend;
+	}
 
 
 }

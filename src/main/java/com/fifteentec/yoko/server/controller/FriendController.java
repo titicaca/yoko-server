@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
@@ -82,7 +81,19 @@ public class FriendController {
 		Set<UserFriendRelation>friends =  friendService.getFriendsAndTags(Account.findMobile(principal.getName()));
 		return JsonConverterUtil.convertSetToJsonString(friends);
 	}
-
-
+	
+	@RequestMapping(value="/{friend_id}/info",method=RequestMethod.GET)
+	public User getFriendInfo(Principal principal, @PathVariable("friend_id") Long friend_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		return  friendService.getFriendInfo(Account.findMobile(principal.getName()), friend_id);
+	}	
+	
+	@RequestMapping(value="/search/{mobile}",method=RequestMethod.GET)
+	public User searchFriend(Principal principal, @PathVariable("mobile") String mobile){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		return  friendService.searchFriend(Account.findMobile(principal.getName()), mobile);
+	}
 }
+
+
 

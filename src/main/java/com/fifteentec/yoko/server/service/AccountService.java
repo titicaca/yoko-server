@@ -15,6 +15,7 @@ import com.fifteentec.yoko.server.model.SignUpInfo;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.repository.AccountRepository;
 import com.fifteentec.yoko.server.repository.OrganizationRepository;
+import com.fifteentec.yoko.server.repository.UserFriendRelationRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
 import com.fifteentec.yoko.server.util.ResponseResult;
 
@@ -29,6 +30,8 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 	private AccountRepository accountRepository;
 	@Autowired
 	private OrganizationRepository organizationRepository;
+	@Autowired
+	private UserFriendRelationRepository userFriendRelationRepository;
 	
     public ResponseResult addUserAccount(SignUpInfo postclass) {  
 		Account account = new Account();
@@ -121,6 +124,9 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 			throw new UserNotFoundException(user_mobile);
 		}
 		logger.info("[getUser] get user: " + user_mobile);
+		user.setCollectnumber(user.getCollectactivities().size());
+		user.setEnrollnumber(user.getEnrollactivities().size());
+		user.setFriendnumber(userFriendRelationRepository.findByUser_id(user.getId()).size());
 		return user;
 	}
 	

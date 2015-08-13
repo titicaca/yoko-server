@@ -158,6 +158,12 @@ public class User extends BaseModel{
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="user")
 	@JsonIgnore
 	private Set<Tag> tags;
+	
+	private int collectnumber;
+	
+	private int enrollnumber;
+	
+	private int friendnumber;
 //	
 //	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 //	@JoinTable(name="EnrollAppointment",
@@ -368,6 +374,31 @@ public class User extends BaseModel{
 
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
+	}
+	
+
+	public int getCollectnumber() {
+		return collectnumber;
+	}
+
+	public void setCollectnumber(int collectnumber) {
+		this.collectnumber = collectnumber;
+	}
+
+	public int getEnrollnumber() {
+		return enrollnumber;
+	}
+
+	public void setEnrollnumber(int enrollnumber) {
+		this.enrollnumber = enrollnumber;
+	}
+
+	public int getFriendnumber() {
+		return friendnumber;
+	}
+
+	public void setFriendnumber(int friendnumber) {
+		this.friendnumber = friendnumber;
 	}
 
 	public Set<Appointment> findAppointmentsByUserAppointmentRelations(){
