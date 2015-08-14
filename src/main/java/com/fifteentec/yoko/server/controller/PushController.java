@@ -4,6 +4,7 @@ import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,8 +32,9 @@ public class PushController {
 	}
 	
 	@RequestMapping(value="/pushtest",method=RequestMethod.GET)
-	public Boolean pushtest() throws PushClientException, PushServerException{
-	 	return pushService.pushMessageSingle();
+	public Boolean pushtest() throws PushClientException, PushServerException {
+	 	return pushService.pushMessageSingle(4418408219469130323l);
+	 	
 	//	return false;
 	}
 	

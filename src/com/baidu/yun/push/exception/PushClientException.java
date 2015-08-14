@@ -1,6 +1,6 @@
 package com.baidu.yun.push.exception;
 
-public class PushClientException extends Exception {
+public class PushClientException extends RuntimeException {
 
 	/**
 	 * 
