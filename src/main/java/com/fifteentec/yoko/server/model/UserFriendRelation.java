@@ -38,7 +38,7 @@ public class UserFriendRelation {
 	@JoinColumn(name="friend_id")
 	private User friend;
 	
-	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@ManyToMany(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@JoinTable(name="TagUserFriendRelation",
 	joinColumns={@JoinColumn(name="user_friend_relation_id")},
 	inverseJoinColumns={@JoinColumn(name="tag_id")})

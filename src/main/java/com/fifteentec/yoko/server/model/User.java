@@ -76,6 +76,11 @@ public class User extends BaseModel{
 	@Column(name="createdtime")
 	private Date createdtime = new Date();
 	
+	@Basic(optional=false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="logintime")
+	private Date logintime = new Date();
+	
 	@Column(name="status",columnDefinition = "INT default 0")
 	private int status;	
 	
@@ -151,7 +156,7 @@ public class User extends BaseModel{
 	@JsonIgnore
 	private Set<UserRequestFriend> userRequestFriends;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="friend")
+	@OneToMany(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY,mappedBy="friend")
 	@JsonIgnore
 	private Set<UserFriendRelation> friendUserRequest;
 	
@@ -269,6 +274,14 @@ public class User extends BaseModel{
 
 	public void setCreatedtime(Date createdtime) {
 		this.createdtime = createdtime;
+	}
+	
+	public Date getLogintime() {
+		return logintime;
+	}
+
+	public void setLogintime(Date logintime) {
+		this.logintime = logintime;
 	}
 
 	public int getStatus() {

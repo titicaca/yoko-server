@@ -39,14 +39,14 @@ public class Tag {
 	@Column(name="status",columnDefinition = "INT default 0")
 	private int status;	
 	
-	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@ManyToMany(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@JoinTable(name="TagUserFriendRelation",
 	joinColumns={@JoinColumn(name="tag_id")},
 	inverseJoinColumns={@JoinColumn(name="user_friend_relation_id")})
 	@JsonIgnore
 	private Set<UserFriendRelation> userFriendRelations;
 	
-	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	@ManyToOne(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY)
 	@JoinColumn(name="user_id")
 	@JsonIgnore
 	private User user;

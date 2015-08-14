@@ -41,7 +41,7 @@ public class FriendService {
 	 * @param friend_id
 	 * @return
 	 */
-	public ResponseResult addUserFriendRequest(String user_mobile , Long friend_id){
+	public ResponseResult addUserFriendRequest(String user_mobile , Long friend_id, String msg){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addUserFriendRequest] user:" + user_mobile + "doesn't exist; "  );
@@ -188,6 +188,26 @@ public class FriendService {
 		tag.setTagname(postclass.getTagname());
 		try{
 			tagRepository.save(tag);
+		}
+		catch(Exception e){
+			return new ResponseResult(false, e.toString());
+		}
+		return new ResponseResult(true);
+	}
+	
+	public ResponseResult deleteTag(String user_mobile, Long tag_id){
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[deleteTag] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		Tag tag = tagRepository.findById(tag_id);
+		if(tag == null){
+			logger.error("[deleteTag] tag:" + tag_id + "doesn't exist; "  );
+			throw new FriendTagNotFoundException(tag_id);
+		}
+		try{
+			tagRepository.delete(tag);
 		}
 		catch(Exception e){
 			return new ResponseResult(false, e.toString());
@@ -357,7 +377,7 @@ public class FriendService {
 		
 	}
 	
-	public ResponseResult updateTagAndFriends(String user_mobile, Long tag_id, Set<User> friendlist){
+	public ResponseResult updateTagAndFriends(String user_mobile, Long tag_id, String tagname, Set<User> friendlist ){
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[updateTagAndFriends] user:" + user_mobile + "doesn't exist; "  );
@@ -368,6 +388,7 @@ public class FriendService {
 			logger.error("[updateTagAndFriends] tag:" + tag_id + "doesn't exist; "  );
 			throw new FriendTagNotFoundException(tag_id);
 		}
+		tag.setTagname(tagname);
 		Set<UserFriendRelation> userFriendRelations = new HashSet<UserFriendRelation>();
 		for (User friend : friendlist) {
 			UserFriendRelation userFriendRelation = userFriendRelationRepository.findByUser_idAndFriend_id(user.getId(), friend.getId());

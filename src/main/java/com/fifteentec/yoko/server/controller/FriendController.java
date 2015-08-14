@@ -3,6 +3,7 @@ package com.fifteentec.yoko.server.controller;
 import java.security.Principal;
 import java.util.Set;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,9 @@ public class FriendController {
 	
 	
 	@RequestMapping(value="/request/{friend_id}",method=RequestMethod.POST)
-	public ResponseResult addUserRequestFriend(Principal principal , @PathVariable("friend_id") Long friend_id){
+	public ResponseResult addUserRequestFriend(Principal principal , @PathVariable("friend_id") Long friend_id, @RequestBody Msg msg){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		return  friendService.addUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
+		return  friendService.addUserFriendRequest(Account.findMobile(principal.getName()), friend_id, msg.getMsg());
 	}
 	
 	@RequestMapping(value="/{friend_id}",method=RequestMethod.DELETE)
@@ -88,11 +89,25 @@ public class FriendController {
 		return  friendService.getFriendInfo(Account.findMobile(principal.getName()), friend_id);
 	}	
 	
-	@RequestMapping(value="/search/{mobile}",method=RequestMethod.GET)
-	public User searchFriend(Principal principal, @PathVariable("mobile") String mobile){
+	@RequestMapping(value="/search",method=RequestMethod.POST)
+	public User searchFriend(Principal principal, @RequestBody User user){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		return  friendService.searchFriend(Account.findMobile(principal.getName()), mobile);
+		return  friendService.searchFriend(Account.findMobile(principal.getName()), user.getMobile());
 	}
+}
+
+class Msg{
+	private String msg;
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	
+	
 }
 
 

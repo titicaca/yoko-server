@@ -13,12 +13,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.fifteentec.yoko.server.model.Account;
 import com.fifteentec.yoko.server.repository.AccountRepository;
+import com.fifteentec.yoko.server.service.RedisService;
 
 @Configuration
 public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 	
 	@Autowired
 	AccountRepository accountRepository;
+	
+	@Autowired
+	RedisService redisService;
 	
 	@Override
 	public void init(AuthenticationManagerBuilder auth) throws Exception {

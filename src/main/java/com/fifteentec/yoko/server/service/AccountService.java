@@ -2,6 +2,8 @@ package com.fifteentec.yoko.server.service;
 
 
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 	private OrganizationRepository organizationRepository;
 	@Autowired
 	private UserFriendRelationRepository userFriendRelationRepository;
+	@Autowired
+	RedisService redisService;
 	
     public ResponseResult addUserAccount(SignUpInfo postclass) {  
 		Account account = new Account();
@@ -124,6 +128,13 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 			throw new UserNotFoundException(user_mobile);
 		}
 		logger.info("[getUser] get user: " + user_mobile);
+		user.setLogintime(new Date());
+		try{
+			userRepository.save(user);
+		}
+		catch(Exception e){
+			
+		}
 		user.setCollectnumber(user.getCollectactivities().size());
 		user.setEnrollnumber(user.getEnrollactivities().size());
 		user.setFriendnumber(userFriendRelationRepository.findByUser_id(user.getId()).size());

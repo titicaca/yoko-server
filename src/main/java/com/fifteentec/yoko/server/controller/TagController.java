@@ -40,6 +40,12 @@ public class TagController {
 		return friendService.updateTagName(Account.findMobile(principal.getName()), postclass, tag_id);
 	}
 	
+	@RequestMapping(value="/{tag_id}",method=RequestMethod.DELETE)
+	public ResponseResult deleteTag(Principal principal, @PathVariable("tag_id") Long tag_id){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		return friendService.deleteTag(Account.findMobile(principal.getName()), tag_id);
+	}
+	
 	@RequestMapping(value="/{tag_id}/friends",method=RequestMethod.GET)
 	public String getTaggedFriends(Principal principal,@PathVariable("tag_id") Long tag_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
@@ -70,8 +76,10 @@ public class TagController {
 	@RequestMapping(value="/{tag_id}/friendlist",method=RequestMethod.PUT)
 	public ResponseResult updateTagAndFriends(Principal principal,@PathVariable("tag_id") Long tag_id,@RequestBody TagFriends postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		return friendService.updateTagAndFriends(Account.findMobile(principal.getName()), tag_id,postclass.getFriendlist());
+		return friendService.updateTagAndFriends(Account.findMobile(principal.getName()), tag_id,postclass.getTagname(),postclass.getFriendlist());
 	}
+
+
 }
 
 class TagFriends {
