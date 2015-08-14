@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baidu.yun.push.exception.PushClientException;
+import com.baidu.yun.push.exception.PushServerException;
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.Account;
 import com.fifteentec.yoko.server.model.PushInfo;
@@ -26,6 +28,12 @@ public class PushController {
 	public ResponseResult addPushInfo(Principal principal,@RequestBody PushInfo postclass){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return pushService.setPushInfo(Account.findMobile(principal.getName()), postclass);
+	}
+	
+	@RequestMapping(value="/pushtest",method=RequestMethod.GET)
+	public Boolean pushtest() throws PushClientException, PushServerException{
+	 	return pushService.pushMessageSingle();
+	//	return false;
 	}
 	
 }
