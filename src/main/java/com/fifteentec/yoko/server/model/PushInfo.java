@@ -4,7 +4,8 @@ public class PushInfo {
 
 	private Long userid;
 	private Long channelid;
-	private String deviceinfo;
+	private int devicetype;		//1 for web, 2 for pc, 
+    //3 for android, 4 for ios, 5 for wp.
 	
 	public Long getUserid() {
 		return userid;
@@ -18,10 +19,12 @@ public class PushInfo {
 	public void setChannelid(Long channelid) {
 		this.channelid = channelid;
 	}
-	public String getDeviceinfo() {
-		return deviceinfo;
+	public int getDevicetype() {
+		return devicetype;
 	}
-	public void setDeviceinfo(String deviceinfo) {
-		this.deviceinfo = deviceinfo;
+	public void setDevicetype(int devicetype) {
+		this.devicetype = devicetype;
 	}
+	
+	
 }

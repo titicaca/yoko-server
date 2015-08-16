@@ -458,16 +458,9 @@ public class FriendService {
 		Long uid = userRequestFriend.getFriend().getId();
 		PushInfo pushInfo = redisService.getPushInfo(uid);
 		if(pushInfo == null) return false;
-//		JSONObject jsonObject = new JSONObject();
-//		jsonObject.put("user_id",userRequestFriend.getUser().getId());
-//		jsonObject.put("friend_id", userRequestFriend.getFriend().getId());
-//		jsonObject.put("msg", userRequestFriend.getMsg());
 		
 		UserRequestFriendMessage userRequestFriendMessag = new UserRequestFriendMessage(userRequestFriend.getUser().getId(), userRequestFriend.getFriend().getId(), userRequestFriend.getMsg());
-		
-	
-		PushMessage pushMessage = new PushMessage(userRequestFriendMessag);
-		
+		PushMessage pushMessage = new PushMessage(userRequestFriendMessag);	
 		return pushService.pushMessageSingle(pushInfo.getChannelid(), JsonConverterUtil.convertObjToString(pushMessage));
 	}
 

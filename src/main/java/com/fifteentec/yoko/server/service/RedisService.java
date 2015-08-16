@@ -49,7 +49,7 @@ public class RedisService {
 		PushInfo pushInfo = new PushInfo();
 		pushInfo.setUserid(jsonObject.getLong("userid"));
 		pushInfo.setChannelid(jsonObject.getLong("channelid"));
-		pushInfo.setDeviceinfo(jsonObject.getString("deviceinfo"));
+		pushInfo.setDevicetype(jsonObject.getInt("devicetype"));
 		return pushInfo;
 	}
 	
