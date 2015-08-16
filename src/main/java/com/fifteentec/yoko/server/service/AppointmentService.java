@@ -70,8 +70,8 @@ public class AppointmentService {
 			logger.error("[addHostAppointment] user:" + user_mobile + "doesn't exist; "  );
 			throw new UserNotFoundException(user_mobile);
 		}
+		Appointment appointment = new Appointment();
 		try{
-			Appointment appointment = new Appointment();
 			appointment.setName(postclass.getName());
 			appointment.setTimebegin(postclass.getTimebegin());
 			appointment.setTimeend(postclass.getTimeend());
@@ -81,14 +81,15 @@ public class AppointmentService {
 			appointment.setPicturelink(postclass.getPicturelink());
 			appointment.setDetaillink(postclass.getDetaillink());
 			appointment.setUser(user);
-			appointmentRepository.save(appointment);
+			appointment = appointmentRepository.save(appointment);
 		}
 		catch(Exception e){
 			logger.error("[addHostAppointment] user:" + user_mobile + "cannot add an appointment");
 			return new ResponseResult(false, e.toString());
 		}
 		logger.info("[addHostAppointment] user:" + user_mobile + "added an appointment named: " + postclass.getName()  );
-		return new ResponseResult(true);	
+		String msg = String.format("{\"postid\" : %s｝", appointment.getId());
+		return new ResponseResult(true, msg);	
 	}
 	
 	public Set<Appointment> getUserAllEnrollAppointments(String user_mobile){

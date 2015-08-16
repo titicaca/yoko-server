@@ -84,8 +84,8 @@ public class ActivityService {
 			logger.error("[addActivity] organization: " + org_mobile + "doesn't exist.");
 			throw new OrganizationNotFoundException(org_mobile);
 		}
+		Activity activity = new Activity();
 		try {
-			Activity activity = new Activity();
 			activity.setName(postclass.getName());
 			activity.setTimebegin(postclass.getTimebegin());
 			activity.setTimeend(postclass.getTimeend());
@@ -95,7 +95,7 @@ public class ActivityService {
 			activity.setPicturelink(postclass.getPicturelink());
 			activity.setDetaillink(postclass.getDetaillink());
 			activity.setOrganization(organization);	
-			activityRepository.save(activity);
+			activity = activityRepository.save(activity);
 		}
 		catch(Exception e){
 			logger.error("[addActivity] organization: " + org_mobile + 
@@ -103,7 +103,8 @@ public class ActivityService {
 			return new ResponseResult(false, e.toString());
 		}
 		logger.info("[addActivity] organization: " + org_mobile + "post activity " + postclass.getName());
-		return new ResponseResult(true);	
+		String msg = String.format("{\"postid\" : %s｝", activity.getId());
+		return new ResponseResult(true, msg);	
 	}
 	
 	public Set<Activity> getUserEnrollActivities(String user_mobile){

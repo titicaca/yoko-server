@@ -63,6 +63,12 @@ public class Schedule extends BaseModel{
 	@Column(name="createdtime")
 	private Date createdtime = new Date();
 	
+	@Basic(optional=false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="updatedtime")
+	private Date updatedTime = new Date();
+	
+	
 	@Column(name="status",columnDefinition = "INT default 0")
 	private int status;	
 	
@@ -170,6 +176,14 @@ public class Schedule extends BaseModel{
 	public void setCreatedtime(Date createdtime) {
 		this.createdtime = createdtime;
 	}   
+	
+	public Date getUpdatedtime() {
+		return this.updatedTime;
+	}
+
+	public void setUpdatedtime(Date time) {
+		this.updatedTime = time;
+	}  
 	
 	public int getStatus() {
 		return status;

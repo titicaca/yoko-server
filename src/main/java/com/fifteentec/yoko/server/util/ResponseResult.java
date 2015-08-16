@@ -1,12 +1,5 @@
 package com.fifteentec.yoko.server.util;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class ResponseResult {
 	private Boolean result;
@@ -37,5 +30,6 @@ public class ResponseResult {
 	public Boolean getResult(){
 		return this.result;
 	}
+	
 
 }

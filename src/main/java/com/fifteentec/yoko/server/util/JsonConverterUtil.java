@@ -20,7 +20,7 @@ public class JsonConverterUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return String.format("{list:%s}", json);
+		return String.format("{\"list\":%s}", json);
 	}
 	
 	public static ResponseEntity<String> convertResultToResponseEntity(ResponseResult r) {

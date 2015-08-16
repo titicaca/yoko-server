@@ -36,5 +36,17 @@ public class UserScheduleController {
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return scheduleService.addSchedule(Account.findMobile(principal.getName()), postclass);
 	}
+	
+	@RequestMapping(method=RequestMethod.PUT)
+	public ResponseResult updateSchedule(Principal principal, @RequestBody Schedule postclass){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		return scheduleService.updateSchedule(Account.findMobile(principal.getName()), postclass);
+	}
+	
+	@RequestMapping(value="/{schedule_id}", method=RequestMethod.DELETE)
+	public ResponseResult delSchedule(Principal principal,  @PathVariable("schedule_id") Long schedule_id ){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		return scheduleService.delSchedule(Account.findMobile(principal.getName()), schedule_id);
+	}
 
 }
