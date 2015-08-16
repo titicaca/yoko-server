@@ -39,4 +39,17 @@ public class JsonConverterUtil {
 			return new ResponseEntity<String>(json,  headers, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	public static <T> String convertObjToString(T obj) {
+		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = new String();
+		try {
+			json = ow.writeValueAsString(obj);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return json;
+	}
 }

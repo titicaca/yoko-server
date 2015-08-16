@@ -1,19 +1,17 @@
 package com.fifteentec.yoko.server.service;
 
-import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 import com.fifteentec.yoko.server.model.PushInfo;
-import com.fifteentec.yoko.server.model.User;
-import com.fifteentec.yoko.server.util.ResponseResult;
+
 
 import org.json.*; 
 

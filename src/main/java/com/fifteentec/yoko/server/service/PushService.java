@@ -1,7 +1,7 @@
 package com.fifteentec.yoko.server.service;
 
 
-import org.json.JSONObject;
+import org.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ import com.baidu.yun.push.model.PushMsgToSingleDeviceResponse;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
 import com.fifteentec.yoko.server.model.PushInfo;
 import com.fifteentec.yoko.server.model.User;
-import com.fifteentec.yoko.server.model.UserRequestFriend;
 import com.fifteentec.yoko.server.repository.UserRepository;
+import com.fifteentec.yoko.server.util.JsonConverterUtil;
 import com.fifteentec.yoko.server.util.ResponseResult;
 
 @Service
@@ -52,7 +52,7 @@ public class PushService {
 		return new ResponseResult(true);
 	}
 	
-	public Boolean pushMessageSingle(Long channelid, String message) throws PushClientException, PushServerException{
+	public Boolean  pushMessageSingle(Long channelid, String description) throws PushClientException, PushServerException{
 		
         /*1. 创建PushKeyPair
          *用于app的合法身份认证
@@ -71,17 +71,22 @@ public class PushService {
                 System.out.println(event.getMessage());
             }
         });
-
+        
+        
+        BaiduYunPushParam baiduYunPushParam = new BaiduYunPushParam(description);
+        
+        
+        System.out.println("2222222    "+JsonConverterUtil.convertObjToString(baiduYunPushParam));
+        
         try {
         // 4. 设置请求参数，创建请求实例
             PushMsgToSingleDeviceRequest request = new PushMsgToSingleDeviceRequest().
                 addChannelId(channelid.toString()).
                 addMsgExpires(new Integer(3600*24*7)).   //设置消息的有效时间,单位秒,默认3600*5.
                 addMessageType(1).           //设置消息类型,0表示透传消息,1表示通知,默认为0.
-                addMessage("{\"title\":\"TEST\",\"description\":"+ message +"}").
+                addMessage(JsonConverterUtil.convertObjToString(baiduYunPushParam)).
                 addDeviceType(3);      //设置设备类型，deviceType => 1 for web, 2 for pc, 
                                        //3 for android, 4 for ios, 5 for wp.
-            System.out.println("{\"title\":\"TEST\",\"description\":"+ message +"}");
         // 5. 执行Http请求
             PushMsgToSingleDeviceResponse response = pushClient.
                 pushMsgToSingleDevice(request);
@@ -110,40 +115,30 @@ public class PushService {
         return true;
 	}
 	
-	public Boolean pushUserRequestFriend(UserRequestFriend userRequestFriend) throws PushClientException, PushServerException{
-		Long uid = userRequestFriend.getFriend().getId();
-		PushInfo pushInfo = redisService.getPushInfo(uid);
-		if(pushInfo == null) return false;
-		PushUserRequestFriendMsg pushUserRequestFriendMsg = new PushUserRequestFriendMsg(userRequestFriend); 
-		return pushMessageSingle(pushInfo.getChannelid(), (new JSONObject(pushUserRequestFriendMsg)).toString());
-		
-		
-	}
+	
 	
 }
-
-class PushUserRequestFriendMsg{
-	int action;
-	UserRequestFriend userRequestFriend;
+class BaiduYunPushParam {
+	private String title;
+	private String description;
 	
-	public PushUserRequestFriendMsg(UserRequestFriend userRequestFriend) {
-		this.userRequestFriend = userRequestFriend;
-		action = 100;
+	public BaiduYunPushParam(String description) {
+		this.title="TEST";
+		this.description=description;
+		
 	}
-	
-	public int getAction() {
-		return action;
+	public String getTitle() {
+		return title;
 	}
-	public void setAction(int action) {
-		this.action = action;
+	public void setTitle(String title) {
+		this.title = title;
 	}
-	public UserRequestFriend getUserRequestFriend() {
-		return userRequestFriend;
+	public String getDescription() {
+		return description;
 	}
-	public void setUserRequestFriend(UserRequestFriend userRequestFriend) {
-		this.userRequestFriend = userRequestFriend;
+	public void setDescription(String description) {
+		this.description = description;
 	}
-	
 	
 }
 

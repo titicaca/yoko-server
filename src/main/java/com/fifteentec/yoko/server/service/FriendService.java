@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import com.baidu.yun.push.exception.PushServerException;
 import com.fifteentec.yoko.server.exception.FriendRelationNotFoundException;
 import com.fifteentec.yoko.server.exception.FriendTagNotFoundException;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
+import com.fifteentec.yoko.server.model.PushInfo;
 import com.fifteentec.yoko.server.model.Tag;
 import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.model.UserFriendRelation;
@@ -22,6 +24,7 @@ import com.fifteentec.yoko.server.repository.TagRepository;
 import com.fifteentec.yoko.server.repository.UserFriendRelationRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
 import com.fifteentec.yoko.server.repository.UserRequestFriendRepository;
+import com.fifteentec.yoko.server.util.JsonConverterUtil;
 import com.fifteentec.yoko.server.util.ResponseResult;
 
 @Service
@@ -69,7 +72,7 @@ public class FriendService {
 		catch(Exception e){
 			return new ResponseResult(false, e.toString());
 		}
-		pushService.pushUserRequestFriend(userRequestFriend);
+		pushUserRequestFriendMessage(userRequestFriend);
 		return new ResponseResult(true);
 	}
 	
@@ -450,6 +453,88 @@ public class FriendService {
 		User friend = userRepository.findByMobile(friend_mobile);
 		return friend;
 	}
-
+	
+	public Boolean pushUserRequestFriendMessage(UserRequestFriend userRequestFriend) throws PushClientException, PushServerException{
+		Long uid = userRequestFriend.getFriend().getId();
+		PushInfo pushInfo = redisService.getPushInfo(uid);
+		if(pushInfo == null) return false;
+//		JSONObject jsonObject = new JSONObject();
+//		jsonObject.put("user_id",userRequestFriend.getUser().getId());
+//		jsonObject.put("friend_id", userRequestFriend.getFriend().getId());
+//		jsonObject.put("msg", userRequestFriend.getMsg());
+		
+		UserRequestFriendMessage userRequestFriendMessag = new UserRequestFriendMessage(userRequestFriend.getUser().getId(), userRequestFriend.getFriend().getId(), userRequestFriend.getMsg());
+		
+	
+		PushMessage pushMessage = new PushMessage(userRequestFriendMessag);
+		
+		return pushService.pushMessageSingle(pushInfo.getChannelid(), JsonConverterUtil.convertObjToString(pushMessage));
+	}
 
 }
+
+class PushMessage{
+	private int action;
+	private UserRequestFriendMessage body;
+	
+	PushMessage(UserRequestFriendMessage body) {
+		action = 100;
+		this.body = body;
+	}
+
+	public int getAction() {
+		return action;
+	}
+
+	public void setAction(int action) {
+		this.action = action;
+	}
+
+	public UserRequestFriendMessage getBody() {
+		return body;
+	}
+
+	public void setBody(UserRequestFriendMessage body) {
+		this.body = body;
+	}
+	
+}
+
+class UserRequestFriendMessage{
+	private Long user_id;
+	private Long friend_id;
+	private String msg;
+	
+	public UserRequestFriendMessage(Long user_id, Long friend_id, String msg) {
+		this.user_id = user_id;
+		this.friend_id = friend_id;
+		this.msg = msg;
+	}
+
+	public Long getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Long user_id) {
+		this.user_id = user_id;
+	}
+
+	public Long getFriend_id() {
+		return friend_id;
+	}
+
+	public void setFriend_id(Long friend_id) {
+		this.friend_id = friend_id;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	
+}
+
+

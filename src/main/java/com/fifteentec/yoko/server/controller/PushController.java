@@ -31,12 +31,6 @@ public class PushController {
 		return pushService.setPushInfo(Account.findMobile(principal.getName()), postclass);
 	}
 	
-	@RequestMapping(value="/pushtest",method=RequestMethod.GET)
-	public Boolean pushtest() throws PushClientException, PushServerException {
-	 	return pushService.pushMessageSingle(4418408219469130323l,"[{\"uid\":231,\"fid\":112,\"msg\":\"ffdfdfd\"}]");
-	 	
-	//	return false;
-	}
 	
 }
 
