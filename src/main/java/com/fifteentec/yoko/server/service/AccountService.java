@@ -2,6 +2,7 @@ package com.fifteentec.yoko.server.service;
 
 
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -128,13 +129,7 @@ private Logger logger = LoggerFactory.getLogger(AccountService.class);
 			throw new UserNotFoundException(user_mobile);
 		}
 		logger.info("[getUser] get user: " + user_mobile);
-		user.setLogintime(new Date());
-		try{
-			userRepository.save(user);
-		}
-		catch(Exception e){
-			
-		}
+		redisService.setLogInTime(user.getId());
 		user.setCollectnumber(user.getCollectactivities().size());
 		user.setEnrollnumber(user.getEnrollactivities().size());
 		user.setFriendnumber(userFriendRelationRepository.findByUser_id(user.getId()).size());

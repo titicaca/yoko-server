@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import com.baidu.yun.push.exception.PushClientException;
+import com.baidu.yun.push.exception.PushServerException;
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.service.FriendService;
@@ -25,7 +27,7 @@ public class FriendController {
 	
 	
 	@RequestMapping(value="/request/{friend_id}",method=RequestMethod.POST)
-	public ResponseResult addUserRequestFriend(Principal principal , @PathVariable("friend_id") Long friend_id, @RequestBody Msg msg){
+	public ResponseResult addUserRequestFriend(Principal principal , @PathVariable("friend_id") Long friend_id, @RequestBody Msg msg) throws PushClientException, PushServerException{
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return  friendService.addUserFriendRequest(Account.findMobile(principal.getName()), friend_id, msg.getMsg());
 	}

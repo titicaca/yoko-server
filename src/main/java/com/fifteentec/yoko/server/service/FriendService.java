@@ -1,5 +1,6 @@
 package com.fifteentec.yoko.server.service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.baidu.yun.push.exception.PushClientException;
+import com.baidu.yun.push.exception.PushServerException;
 import com.fifteentec.yoko.server.exception.FriendRelationNotFoundException;
 import com.fifteentec.yoko.server.exception.FriendTagNotFoundException;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
@@ -34,14 +37,19 @@ public class FriendService {
 	UserFriendRelationRepository userFriendRelationRepository;
 	@Autowired
 	TagRepository tagRepository;
-	
+	@Autowired
+	RedisService redisService;
+	@Autowired
+	PushService pushService;
 	/**
 	 * add user friend request
 	 * @param user_mobile
 	 * @param friend_id
 	 * @return
+	 * @throws PushServerException 
+	 * @throws PushClientException 
 	 */
-	public ResponseResult addUserFriendRequest(String user_mobile , Long friend_id, String msg){
+	public ResponseResult addUserFriendRequest(String user_mobile , Long friend_id, String msg) throws PushClientException, PushServerException{
 		User user =userRepository.findByMobile(user_mobile);
 		if(user == null){
 			logger.error("[addUserFriendRequest] user:" + user_mobile + "doesn't exist; "  );
@@ -55,11 +63,13 @@ public class FriendService {
 		try{
 			userRequestFriend.setUser(user);
 			userRequestFriend.setFriend(userRepository.findById(friend_id));
+			userRequestFriend.setMsg(msg);
 			userRequestFriendRepository.save(userRequestFriend);
 		}
 		catch(Exception e){
 			return new ResponseResult(false, e.toString());
 		}
+		pushService.pushUserRequestFriend(userRequestFriend);
 		return new ResponseResult(true);
 	}
 	
@@ -344,6 +354,11 @@ public class FriendService {
 			throw new UserNotFoundException(user_mobile);
 		}
 		Set<UserFriendRelation> userFriendRelations = userFriendRelationRepository.findByUser_id(user.getId());
+		for (UserFriendRelation userFriendRelation : userFriendRelations) {
+			Date date = redisService.getLogInTime(userFriendRelation.getFriend().getId());
+			if(date != null)
+				userFriendRelation.getFriend().setLogintime(date);
+		}
 		UserFriendRelation userFriendRelation = new UserFriendRelation();
 		userFriendRelation.setId(0l);
 		userFriendRelation.setTags(user.getTags());
@@ -419,6 +434,9 @@ public class FriendService {
 		friend.setCollectnumber(friend.getCollectactivities().size());
 		friend.setEnrollnumber(friend.getEnrollactivities().size());
 		friend.setFriendnumber(userFriendRelationRepository.findByUser_id(friend_id).size());
+		Date date = redisService.getLogInTime(friend.getId());
+		if(date != null)
+			friend.setLogintime(date);
 		return friend;
 	
 	}

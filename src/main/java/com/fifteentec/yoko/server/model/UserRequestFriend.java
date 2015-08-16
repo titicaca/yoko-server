@@ -35,6 +35,9 @@ public class UserRequestFriend {
 	@JsonIgnore
 	private User friend;
 	
+	@Column(name="msg")
+	private String msg;
+	
 	@Basic(optional=false)
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="createdtime")
@@ -70,6 +73,14 @@ public class UserRequestFriend {
 
 	public void setCreatedtime(Date createdtime) {
 		this.createdtime = createdtime;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 	
 	

@@ -46,9 +46,9 @@ public class RedisService {
 	public PushInfo getPushInfo(Long id){
 		ValueOperations<String, String> ops = this.template.opsForValue();
 		String key = "pushinfo-userid_"+id.toString();
+		if(ops.get(key) == null) return null;
 		JSONObject jsonObject = new JSONObject(ops.get(key));	
 		PushInfo pushInfo = new PushInfo();
-		pushInfo.setUid(jsonObject.getLong("uid"));
 		pushInfo.setUserid(jsonObject.getLong("userid"));
 		pushInfo.setChannelid(jsonObject.getLong("channelid"));
 		pushInfo.setDeviceinfo(jsonObject.getString("deviceinfo"));
@@ -61,10 +61,11 @@ public class RedisService {
 		ops.set(key, new Timestamp(System.currentTimeMillis()).toString());
 	}
 	
-	public String getLogInTime(Long id){
+	public Date getLogInTime(Long id){
 		ValueOperations<String, String> ops = this.template.opsForValue();
 		String key = "logintime-userid_"+id.toString();
-		return ops.get(key);
+		if(ops.get(key) == null) return null;
+		else return  Timestamp.valueOf(ops.get(key));
 	}
 	
 	

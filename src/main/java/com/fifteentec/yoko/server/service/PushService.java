@@ -1,6 +1,7 @@
 package com.fifteentec.yoko.server.service;
 
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.baidu.yun.push.model.PushMsgToSingleDeviceResponse;
 import com.fifteentec.yoko.server.exception.UserNotFoundException;
 import com.fifteentec.yoko.server.model.PushInfo;
 import com.fifteentec.yoko.server.model.User;
+import com.fifteentec.yoko.server.model.UserRequestFriend;
 import com.fifteentec.yoko.server.repository.UserRepository;
 import com.fifteentec.yoko.server.util.ResponseResult;
 
@@ -50,7 +52,7 @@ public class PushService {
 		return new ResponseResult(true);
 	}
 	
-	public Boolean pushMessageSingle(Long channelid) throws PushClientException, PushServerException{
+	public Boolean pushMessageSingle(Long channelid, String message) throws PushClientException, PushServerException{
 		
         /*1. 创建PushKeyPair
          *用于app的合法身份认证
@@ -76,15 +78,16 @@ public class PushService {
                 addChannelId(channelid.toString()).
                 addMsgExpires(new Integer(3600*24*7)).   //设置消息的有效时间,单位秒,默认3600*5.
                 addMessageType(1).           //设置消息类型,0表示透传消息,1表示通知,默认为0.
-                addMessage("{\"title\":\"TEST\",\"description\":\"Hello Baidu push!\"}").
+                addMessage("{\"title\":\"TEST\",\"description\":"+ message +"}").
                 addDeviceType(3);      //设置设备类型，deviceType => 1 for web, 2 for pc, 
                                        //3 for android, 4 for ios, 5 for wp.
+            System.out.println("{\"title\":\"TEST\",\"description\":"+ message +"}");
         // 5. 执行Http请求
             PushMsgToSingleDeviceResponse response = pushClient.
                 pushMsgToSingleDevice(request);
         // 6. Http请求返回值解析
-            System.out.println("msgId: " + response.getMsgId()
-                    + ",sendTime: " + response.getSendTime());
+       //     System.out.println("msgId: " + response.getMsgId()
+         //           + ",sendTime: " + response.getSendTime());
         } catch (PushClientException e) {
             //ERROROPTTYPE 用于设置异常的处理方式 -- 抛出异常和捕获异常,
             //'true' 表示抛出, 'false' 表示捕获。
@@ -106,6 +109,41 @@ public class PushService {
         }
         return true;
 	}
+	
+	public Boolean pushUserRequestFriend(UserRequestFriend userRequestFriend) throws PushClientException, PushServerException{
+		Long uid = userRequestFriend.getFriend().getId();
+		PushInfo pushInfo = redisService.getPushInfo(uid);
+		if(pushInfo == null) return false;
+		PushUserRequestFriendMsg pushUserRequestFriendMsg = new PushUserRequestFriendMsg(userRequestFriend); 
+		return pushMessageSingle(pushInfo.getChannelid(), (new JSONObject(pushUserRequestFriendMsg)).toString());
+		
+		
+	}
+	
+}
+
+class PushUserRequestFriendMsg{
+	int action;
+	UserRequestFriend userRequestFriend;
+	
+	public PushUserRequestFriendMsg(UserRequestFriend userRequestFriend) {
+		this.userRequestFriend = userRequestFriend;
+		action = 100;
+	}
+	
+	public int getAction() {
+		return action;
+	}
+	public void setAction(int action) {
+		this.action = action;
+	}
+	public UserRequestFriend getUserRequestFriend() {
+		return userRequestFriend;
+	}
+	public void setUserRequestFriend(UserRequestFriend userRequestFriend) {
+		this.userRequestFriend = userRequestFriend;
+	}
+	
 	
 }
 

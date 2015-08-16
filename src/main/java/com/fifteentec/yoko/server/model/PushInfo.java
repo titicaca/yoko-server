@@ -1,16 +1,11 @@
 package com.fifteentec.yoko.server.model;
 
 public class PushInfo {
-	private Long uid;
+
 	private Long userid;
 	private Long channelid;
 	private String deviceinfo;
-	public Long getUid() {
-		return uid;
-	}
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
+	
 	public Long getUserid() {
 		return userid;
 	}
