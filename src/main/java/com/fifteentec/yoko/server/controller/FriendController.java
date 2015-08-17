@@ -13,6 +13,7 @@ import com.baidu.yun.push.exception.PushServerException;
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
 import com.fifteentec.yoko.server.service.FriendService;
+import com.fifteentec.yoko.server.service.PushService;
 import com.fifteentec.yoko.server.util.JsonConverterUtil;
 import com.fifteentec.yoko.server.util.ResponseResult;
 
@@ -24,14 +25,22 @@ public class FriendController {
 	
 	@Autowired
 	FriendService friendService;
+	@Autowired
+	PushService pushService;
 	
 	
-	@RequestMapping(value="/request/{friend_id}",method=RequestMethod.POST)
-	public ResponseResult addUserRequestFriend(Principal principal , @PathVariable("friend_id") Long friend_id, @RequestBody Msg msg) throws PushClientException, PushServerException{
-		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		return  friendService.addUserFriendRequest(Account.findMobile(principal.getName()), friend_id, msg.getMsg());
+	@RequestMapping(value = "/request/{friend_id}", method = RequestMethod.POST)
+	public ResponseResult addUserRequestFriend(Principal principal, @PathVariable("friend_id") Long friend_id,
+			@RequestBody Msg msg) throws PushClientException, PushServerException {
+		if (!Account.findRole(principal.getName()).equals("0"))
+			throw new PermissionErrorException();
+		ResponseResult responseResult = friendService.addUserFriendRequest(Account.findMobile(principal.getName()),
+				friend_id, msg.getMsg());
+		if (responseResult.getResult() == false)
+			return responseResult;
+		return pushService.pushMessageSingle(Account.findMobile(principal.getName()), responseResult.getMsg());
 	}
-	
+
 	@RequestMapping(value="/{friend_id}",method=RequestMethod.DELETE)
 	public ResponseResult delFriend(Principal principal , @PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();

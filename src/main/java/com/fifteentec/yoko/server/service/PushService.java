@@ -58,12 +58,21 @@ public class PushService {
 		return user;
 	}
 	
-	public Boolean  pushMessageSingle(Long channelid, String description) throws PushClientException, PushServerException{
+	public ResponseResult  pushMessageSingle(String user_mobile, String description) throws PushClientException, PushServerException{
 		
         /*1. 创建PushKeyPair
          *用于app的合法身份认证
          *apikey和secretKey可在应用详情中获取
          */
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[pushMessageSingle] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		
+		PushInfo pushInfo = redisService.getPushInfo(user.getId());
+		if(pushInfo == null) return new ResponseResult(false, "error:cannot find channelid;");
+		
         PushKeyPair pair = new PushKeyPair(apiKey,secretKey);
 
         // 2. 创建BaiduPushClient，访问SDK接口
@@ -83,7 +92,7 @@ public class PushService {
         try {
         // 4. 设置请求参数，创建请求实例
             PushMsgToSingleDeviceRequest request = new PushMsgToSingleDeviceRequest().
-                addChannelId(channelid.toString()).
+                addChannelId(pushInfo.getChannelid().toString()).
                 addMsgExpires(new Integer(3600*24*7)).   //设置消息的有效时间,单位秒,默认3600*5.
                 addMessageType(0).           //设置消息类型,0表示透传消息,1表示通知,默认为0.
                 addMessage(description).
@@ -98,23 +107,11 @@ public class PushService {
         } catch (PushClientException e) {
             //ERROROPTTYPE 用于设置异常的处理方式 -- 抛出异常和捕获异常,
             //'true' 表示抛出, 'false' 表示捕获。
-            if (BaiduPushConstants.ERROROPTTYPE) { 
-                throw e;
-            } else {
-                e.printStackTrace();
-                return false;
-            }
+            return new ResponseResult(false, e.toString());
         } catch (PushServerException e) {
-            if (BaiduPushConstants.ERROROPTTYPE) {
-                throw e;
-            } else {
-                System.out.println(String.format(
-                        "requestId: %d, errorCode: %d, errorMsg: %s",
-                        e.getRequestId(), e.getErrorCode(), e.getErrorMsg()));
-                return false;
-            }
+        	return new ResponseResult(false, e.toString());
         }
-        return true;
+        return new ResponseResult(true);
 	}
 	
 	

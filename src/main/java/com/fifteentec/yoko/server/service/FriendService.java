@@ -25,6 +25,7 @@ import com.fifteentec.yoko.server.repository.UserFriendRelationRepository;
 import com.fifteentec.yoko.server.repository.UserRepository;
 import com.fifteentec.yoko.server.repository.UserRequestFriendRepository;
 import com.fifteentec.yoko.server.util.JsonConverterUtil;
+import com.fifteentec.yoko.server.util.PushMessage;
 import com.fifteentec.yoko.server.util.ResponseResult;
 
 @Service
@@ -72,8 +73,7 @@ public class FriendService {
 		catch(Exception e){
 			return new ResponseResult(false, e.toString());
 		}
-		pushUserRequestFriendMessage(userRequestFriend);
-		return new ResponseResult(true);
+		return new ResponseResult(true,pushUserRequestFriendMessage(userRequestFriend));
 	}
 	
 	/**
@@ -454,44 +454,14 @@ public class FriendService {
 		return friend;
 	}
 	
-	public Boolean pushUserRequestFriendMessage(UserRequestFriend userRequestFriend) throws PushClientException, PushServerException{
-		Long uid = userRequestFriend.getFriend().getId();
-		PushInfo pushInfo = redisService.getPushInfo(uid);
-		if(pushInfo == null) return false;
-		
+	public String pushUserRequestFriendMessage(UserRequestFriend userRequestFriend) throws PushClientException, PushServerException{
 		UserRequestFriendMessage userRequestFriendMessag = new UserRequestFriendMessage(userRequestFriend.getUser().getId(), userRequestFriend.getFriend().getId(), userRequestFriend.getMsg());
-		PushMessage pushMessage = new PushMessage(userRequestFriendMessag);	
-		return pushService.pushMessageSingle(pushInfo.getChannelid(), JsonConverterUtil.convertObjToString(pushMessage));
+		PushMessage<UserRequestFriendMessage> pushMessage = new PushMessage<UserRequestFriendMessage>(100,userRequestFriendMessag);	
+		return JsonConverterUtil.convertObjToString(pushMessage);
 	}
 
 }
 
-class PushMessage{
-	private int action;
-	private UserRequestFriendMessage body;
-	
-	PushMessage(UserRequestFriendMessage body) {
-		action = 100;
-		this.body = body;
-	}
-
-	public int getAction() {
-		return action;
-	}
-
-	public void setAction(int action) {
-		this.action = action;
-	}
-
-	public UserRequestFriendMessage getBody() {
-		return body;
-	}
-
-	public void setBody(UserRequestFriendMessage body) {
-		this.body = body;
-	}
-	
-}
 
 class UserRequestFriendMessage{
 	private Long user_id;
