@@ -89,12 +89,14 @@ public class FriendService {
 			throw new UserNotFoundException(user_mobile);
 		}
 		UserFriendRelation userFriendRelation = userFriendRelationRepository.findByUser_idAndFriend_id(user.getId(), friend_id);
+		UserFriendRelation userFriendRelationReverse = userFriendRelationRepository.findByUser_idAndFriend_id(friend_id, user.getId());
 		if(userFriendRelation == null){
 			logger.error("[delFriendRelation] userFriendRelation: [" + user.getId() + ", " + friend_id + "] doesn't exist; "  );
 			throw new FriendRelationNotFoundException(user.getId(), friend_id);
 		}
 		try{
 			userFriendRelationRepository.delete(userFriendRelation);
+			userFriendRelationRepository.delete(userFriendRelationReverse);
 		}
 		catch(Exception e){
 			return new ResponseResult(false, e.toString());
