@@ -14,4 +14,8 @@ public class UserNotFoundException extends RuntimeException {
 	public UserNotFoundException(String string) {
 		super("could not find user '" + string + "'.");
 	}
+	
+	public UserNotFoundException(Long id) {
+		super("could not find user id'" + id + "'.");
+	}
 }

@@ -38,7 +38,7 @@ public class FriendController {
 				friend_id, msg.getMsg());
 		if (responseResult.getResult() == false)
 			return responseResult;
-		return pushService.pushMessageSingle(Account.findMobile(principal.getName()), responseResult.getMsg());
+		return pushService.pushMessageSingle(friend_id, responseResult.getMsg());
 	}
 
 	@RequestMapping(value="/{friend_id}",method=RequestMethod.DELETE)

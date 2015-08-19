@@ -58,19 +58,19 @@ public class PushService {
 		return user;
 	}
 	
-	public ResponseResult  pushMessageSingle(String user_mobile, String description) throws PushClientException, PushServerException{
+	public ResponseResult pushMessageSingle(Long friend_id, String description) throws PushClientException, PushServerException{
 		
         /*1. 创建PushKeyPair
          *用于app的合法身份认证
          *apikey和secretKey可在应用详情中获取
          */
-		User user =userRepository.findByMobile(user_mobile);
-		if(user == null){
-			logger.error("[pushMessageSingle] user:" + user_mobile + "doesn't exist; "  );
-			throw new UserNotFoundException(user_mobile);
+		User friend =userRepository.findById(friend_id);
+		if(friend == null){
+			logger.error("[pushMessageSingle] user: id" + friend_id + "doesn't exist; "  );
+			throw new UserNotFoundException(friend_id);
 		}
-		
-		PushInfo pushInfo = redisService.getPushInfo(user.getId());
+		System.out.println(friend.getId().toString());
+		PushInfo pushInfo = redisService.getPushInfo(friend.getId());
 		if(pushInfo == null) return new ResponseResult(false, "error:cannot find channelid;");
 		
         PushKeyPair pair = new PushKeyPair(apiKey,secretKey);
