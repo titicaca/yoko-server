@@ -53,7 +53,7 @@ public class FriendController {
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		ResponseResult responseResult =  friendService.acceptUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
 		if(responseResult.getResult() == false)
-			return null;
+			return null;  
 		return friendService.getFriendInfo(Account.findMobile(principal.getName()), friend_id);
 		
 	}
