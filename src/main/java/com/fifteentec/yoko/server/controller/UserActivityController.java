@@ -136,7 +136,7 @@ public class UserActivityController {
 	@RequestMapping(value="/watch/{organization_id}",method=RequestMethod.POST)
 	public ResponseResult addUserWatchedOrganization(Principal principal ,@PathVariable("organization_id") Long organization_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		return activityService.addUserCollectedActivity(Account.findMobile(principal.getName()), organization_id);
+		return activityService.addUserWatchedOrganization(Account.findMobile(principal.getName()), organization_id);
 	}
 	
 	@RequestMapping(value="/watch/{organization_id}",method=RequestMethod.DELETE)

@@ -62,7 +62,7 @@ public class FriendService {
 		if(userFriendRelationRepository.findByUser_idAndFriend_id(user.getId(), friend_id)!=null)
 			return new ResponseResult(false,"relation already exist");
 		if(userRequestFriendRepository.findByUser_idAndFriend_id(user.getId(), friend_id)!=null) 
-			return new ResponseResult(false, "request already exist");
+			return new ResponseResult(true, "request already exist");
 		UserRequestFriend userRequestFriend = new UserRequestFriend();
 		try{
 			userRequestFriend.setUser(user);

@@ -12,6 +12,7 @@ import com.baidu.yun.push.exception.PushClientException;
 import com.baidu.yun.push.exception.PushServerException;
 import com.fifteentec.yoko.server.exception.PermissionErrorException;
 import com.fifteentec.yoko.server.model.*;
+import com.fifteentec.yoko.server.service.AccountService;
 import com.fifteentec.yoko.server.service.FriendService;
 import com.fifteentec.yoko.server.service.PushService;
 import com.fifteentec.yoko.server.util.JsonConverterUtil;
@@ -48,9 +49,13 @@ public class FriendController {
 	}
 	
 	@RequestMapping(value="/response/{friend_id}",method=RequestMethod.PUT)
-	public ResponseResult responseUserRequestFriend(Principal principal,@PathVariable("friend_id") Long friend_id){
+	public User responseUserRequestFriend(Principal principal,@PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
-		return  friendService.acceptUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
+		ResponseResult responseResult =  friendService.acceptUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
+		if(responseResult.getResult() == false)
+			return null;
+		return friendService.getFriendInfo(Account.findMobile(principal.getName()), friend_id);
+		
 	}
 	
 	@RequestMapping(value="/response/{friend_id}",method=RequestMethod.DELETE)
