@@ -49,11 +49,12 @@ public class FriendController {
 	}
 	
 	@RequestMapping(value="/response/{friend_id}",method=RequestMethod.PUT)
-	public User responseUserRequestFriend(Principal principal,@PathVariable("friend_id") Long friend_id){
+	public User responseUserRequestFriend(Principal principal,@PathVariable("friend_id") Long friend_id) throws PushClientException, PushServerException{
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		ResponseResult responseResult =  friendService.acceptUserFriendRequest(Account.findMobile(principal.getName()), friend_id);
 		if(responseResult.getResult() == false)
-			return null;  
+			return null; 
+		pushService.pushMessageSingle(friend_id, responseResult.getMsg());
 		return friendService.getFriendInfo(Account.findMobile(principal.getName()), friend_id);
 		
 	}
