@@ -41,18 +41,18 @@ public class Application {
     }
 
 	
-	@Bean
-	CommandLineRunner init(AccountRepository accountRepository) {
-		return (evt) -> Arrays.asList(
-				"jhoeller,dsyer,pwebb,ogierke,rwinch,mfisher,mpollack,jlong".split(","))
-				.forEach(
-						a -> {
-							Account account = new Account();
-							account.setUsername(a);
-							account.setPassword("password");
-							accountRepository.save(account);
-						});
-	}
+//	@Bean
+//	CommandLineRunner init(AccountRepository accountRepository) {
+//		return (evt) -> Arrays.asList(
+//				"jhoeller,dsyer,pwebb,ogierke,rwinch,mfisher,mpollack,jlong".split(","))
+//				.forEach(
+//						a -> {
+//							Account account = new Account();
+//							account.setUsername(a);
+//							account.setPassword("password");
+//							accountRepository.save(account);
+//						});
+//	}
 	
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {
