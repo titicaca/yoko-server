@@ -1,6 +1,7 @@
 package com.fifteentec.yoko.server.controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,13 @@ public class UserActivityController {
 	public String getAllActivities(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<Activity> activities = activityService.getUserAllActivities(Account.findMobile(principal.getName()));
+		return JsonConverterUtil.convertSetToJsonString(activities);		
+	}
+	
+	@RequestMapping(value="/activities/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String getAllActivitiesWithPaging(Principal principal,@PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		List<Activity> activities = activityService.getUserAllActivitiesWithPaging(Account.findMobile(principal.getName()), pageno, pagesize);
 		return JsonConverterUtil.convertSetToJsonString(activities);		
 	}
 	

@@ -1,5 +1,7 @@
 package com.fifteentec.yoko.server.util;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.HttpHeaders;
@@ -11,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class JsonConverterUtil {
-	public static <T> String convertSetToJsonString(Set<T> s){
+	public static <T> String convertSetToJsonString(Collection<T> s){
 		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = new String();
 		try {

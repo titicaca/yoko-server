@@ -1,11 +1,17 @@
 package com.fifteentec.yoko.server.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.fifteentec.yoko.server.exception.ActivityNotFoundException;
@@ -44,10 +50,18 @@ public class ActivityService {
 		}
 	}
 	
+	public List<Activity> getLatestActivitiesWithPaging(int pageno, int pagesize){
+		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize,s);
+		Page<Activity> page = activityRepository.findAll(pageable);
+		return page.getContent();
+	}
+	
+	
 	public Set<Activity> getUserAllActivities(String user_mobile){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
-			logger.error("[getAllActivities] user: " + user_mobile + "doesn't exist.");
+			logger.error("[getUserAllActivities] user: " + user_mobile + "doesn't exist.");
 			throw new UserNotFoundException(user_mobile);
 		}
 		Set<Organization> organizations = user.getOrganizations();
@@ -57,6 +71,22 @@ public class ActivityService {
 		}
 		return activities;
 	}
+	
+	//TODO check if it works correctly
+	public List<Activity> getUserAllActivitiesWithPaging(String user_mobile, int pageno, int pagesize){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[getUserAllActivitiesWithPaging] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		Set<Organization> organizations = user.getOrganizations();
+		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize,s);
+		Page<Activity> page = activityRepository.findByOrganizationIn(organizations, pageable);
+		return page.getContent();
+	}
+	
+	
 	
 	public Set<Activity> getActivitiesByOrganization(Long org_id){
 		Organization organization = organizationRepository.findById(org_id);
