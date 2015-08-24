@@ -108,17 +108,20 @@ public class FriendService {
 		}
 		return new ResponseResult(true);
 	}
-	
-	public String getUserFriendRequest(String user_mobile){
+
+	public String getUserFriendRequest(String user_mobile) {
 		User user = userRepository.findByMobile(user_mobile);
 		if (user == null) {
 			logger.error("[updateUserRequestFriend] user:" + user_mobile + "doesn't exist; ");
 			throw new UserNotFoundException(user_mobile);
 		}
-		Set<UserRequestFriend> userRequestFriends =  userRequestFriendRepository.findByUser_idOrFriend_id(user.getId(), user.getId());
+		Set<UserRequestFriend> userRequestFriends = userRequestFriendRepository.findByUser_idOrFriend_id(user.getId(),
+				user.getId());
 		Set<UserRequestFriendInfo> userRequestFriendInfos = new HashSet<UserRequestFriendInfo>();
 		for (UserRequestFriend userRequestFriend : userRequestFriends) {
-			userRequestFriendInfos.add(new UserRequestFriendInfo(userRequestFriend.getUser().getId(),userRequestFriend.getFriend().getId() , userRequestFriend.getMsg()));
+			userRequestFriendInfos.add(new UserRequestFriendInfo(userRequestFriend.getUser().getId(),
+					userRequestFriend.getFriend().getId(), userRequestFriend.getMsg(),
+					userRequestFriend.getCreatedtime()));
 		}
 		return JsonConverterUtil.convertSetToJsonString(userRequestFriendInfos);
 	}
@@ -535,18 +538,20 @@ class UserRequestFriendMessage {
 
 }
 
-class UserRequestFriendInfo{
+class UserRequestFriendInfo {
 	private Long user_id;
 	private Long friend_id;
 	private String msg;
-	
+	private Date createdtime;
+
 	public UserRequestFriendInfo() {
 	}
-	
-	public UserRequestFriendInfo(Long user_id,Long friend_id,String msg){
+
+	public UserRequestFriendInfo(Long user_id, Long friend_id, String msg, Date createdtime) {
 		this.user_id = user_id;
 		this.friend_id = friend_id;
 		this.msg = msg;
+		this.createdtime = createdtime;
 	}
 
 	public Long getUser_id() {
@@ -572,7 +577,13 @@ class UserRequestFriendInfo{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	
-	
-	
+
+	public Date getCreatedtime() {
+		return createdtime;
+	}
+
+	public void setCreatedtime(Date createdtime) {
+		this.createdtime = createdtime;
+	}
+
 }
