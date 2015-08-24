@@ -108,6 +108,20 @@ public class FriendService {
 		}
 		return new ResponseResult(true);
 	}
+	
+	public String getUserFriendRequest(String user_mobile){
+		User user = userRepository.findByMobile(user_mobile);
+		if (user == null) {
+			logger.error("[updateUserRequestFriend] user:" + user_mobile + "doesn't exist; ");
+			throw new UserNotFoundException(user_mobile);
+		}
+		Set<UserRequestFriend> userRequestFriends =  userRequestFriendRepository.findByUser_idOrFriend_id(user.getId(), user.getId());
+		Set<UserRequestFriendInfo> userRequestFriendInfos = new HashSet<UserRequestFriendInfo>();
+		for (UserRequestFriend userRequestFriend : userRequestFriends) {
+			userRequestFriendInfos.add(new UserRequestFriendInfo(userRequestFriend.getUser().getId(),userRequestFriend.getFriend().getId() , userRequestFriend.getMsg()));
+		}
+		return JsonConverterUtil.convertSetToJsonString(userRequestFriendInfos);
+	}
 
 	/**
 	 * response the user friend request
@@ -519,4 +533,46 @@ class UserRequestFriendMessage {
 		this.msg = msg;
 	}
 
+}
+
+class UserRequestFriendInfo{
+	private Long user_id;
+	private Long friend_id;
+	private String msg;
+	
+	public UserRequestFriendInfo() {
+	}
+	
+	public UserRequestFriendInfo(Long user_id,Long friend_id,String msg){
+		this.user_id = user_id;
+		this.friend_id = friend_id;
+		this.msg = msg;
+	}
+
+	public Long getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Long user_id) {
+		this.user_id = user_id;
+	}
+
+	public Long getFriend_id() {
+		return friend_id;
+	}
+
+	public void setFriend_id(Long friend_id) {
+		this.friend_id = friend_id;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+	
+	
+	
 }

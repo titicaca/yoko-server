@@ -59,6 +59,13 @@ public class FriendController {
 		
 	}
 	
+	@RequestMapping(value = "/request/allinfo", method = RequestMethod.GET)
+	public String getUserRequestFriend(Principal principal){
+		if (!Account.findRole(principal.getName()).equals("0"))
+			throw new PermissionErrorException();
+		return friendService.getUserFriendRequest(Account.findMobile(principal.getName()));
+	}
+	
 	@RequestMapping(value="/response/{friend_id}",method=RequestMethod.DELETE)
 	public ResponseResult delUserRequestFriend(Principal principal,@PathVariable("friend_id") Long friend_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
@@ -123,8 +130,6 @@ class Msg{
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	
-	
 }
 
 
