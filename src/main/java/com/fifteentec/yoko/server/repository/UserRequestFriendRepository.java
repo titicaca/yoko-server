@@ -17,6 +17,7 @@ public interface UserRequestFriendRepository extends JpaRepository<UserRequestFr
 	
 	public UserRequestFriend findByUser_idAndFriend_id(Long user_id,Long friend_id);
 	public Set<UserRequestFriend> findByUser_id(Long user_id);
+	public Set<UserRequestFriend> findByUser_idOrFriend_id(Long user_id,Long friend_id);
 	
 	
 }
