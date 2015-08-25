@@ -34,6 +34,9 @@ public class UserActivityController {
 	@Autowired
 	UserRepository userRepository;
 	
+	
+	
+	
 	/**
 	 * User action: get all the activities of the user followed activities
 	 * @param user_id
@@ -67,11 +70,20 @@ public class UserActivityController {
 	
 	
 	/**
-	 * Get all enroll activities
+	 * Get all enroll activities with paging
+	 * TODO test if it works right
 	 * @param principal
 	 * @return
 	 */
 	@RequestMapping(value="/enroll/activities",method=RequestMethod.GET)
+	public String getUserEnrollActivities(Principal principal, @PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		List<Activity> activities = activityService.getUserEnrollActivitiesWithPaging(Account.findMobile(principal.getName()), pageno, pagesize);
+		return JsonConverterUtil.convertSetToJsonString(activities);
+	}
+	
+	
+	@RequestMapping(value="/enroll/activities/page/{pageno}/{pagesize}",method=RequestMethod.GET)
 	public String getUserEnrollActivities(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<Activity> activities = activityService.getUserEnrollActivities(Account.findMobile(principal.getName()));
@@ -152,6 +164,15 @@ public class UserActivityController {
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		return activityService.delUserWatchedOrganization(Account.findMobile(principal.getName()), organization_id);
 	}
+	
+	@RequestMapping(value="/search/{organization_name}/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String delUserWatchedOrganization(Principal principal ,@PathVariable("organization_name") String organization_name,
+			@PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		List<Organization> orgs = activityService.searchOrganizationWithPaging(organization_name, pageno, pagesize);
+		return JsonConverterUtil.convertSetToJsonString(orgs);
+	}
+	
 	
 	
 	

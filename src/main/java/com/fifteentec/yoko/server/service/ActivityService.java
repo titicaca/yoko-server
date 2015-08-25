@@ -39,6 +39,12 @@ public class ActivityService {
 	@Autowired
 	UserRepository userRepository;
 	
+	public List<Organization> searchOrganizationWithPaging(String likename, int pageno, int pagesize){
+		Pageable pageable = new PageRequest(pageno, pagesize);
+		Page<Organization> page = organizationRepository.findByNameLike(likename, pageable);
+		return page.getContent();
+	}
+	
 	public Activity getActivity(Long activity_id){
 		Activity a = activityRepository.findById(activity_id);
 		if (a == null){
@@ -72,7 +78,6 @@ public class ActivityService {
 		return activities;
 	}
 	
-	//TODO check if it works correctly
 	public List<Activity> getUserAllActivitiesWithPaging(String user_mobile, int pageno, int pagesize){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
@@ -98,6 +103,18 @@ public class ActivityService {
 		return organization.getActivities();
 	}
 	
+	public List<Activity> getActivitiesByOrganizationWithPaging(Long org_id, int pageno, int pagesize){
+		Organization organization = organizationRepository.findById(org_id);
+		if (organization == null){
+			logger.error("[getActivitiesByOrganizationWithPaging] organization: " + org_id + "doesn't exist.");
+			throw new OrganizationNotFoundException(org_id);
+		}
+		logger.info("[getActivitiesByOrganizationWithPaging] organization: " + org_id + "get activities.");
+		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize,s);
+		return activityRepository.findByOrganization(pageable).getContent();
+	}
+	
 	public Set<Activity> getActivitiesByOrganization(String org_mobile){
 		Organization organization = organizationRepository.findByMobile(org_mobile);
 		if (organization == null){
@@ -106,6 +123,18 @@ public class ActivityService {
 		}
 		logger.info("[getActivitiesByOrganization] organization: " + org_mobile + "get activities.");
 		return organization.getActivities();
+	}
+	
+	public List<Activity> getActivitiesByOrganizationWithPaging(String org_mobile, int pageno, int pagesize){
+		Organization organization = organizationRepository.findByMobile(org_mobile);
+		if (organization == null){
+			logger.error("[getActivitiesByOrganizationWithPaging] organization: " + org_mobile + "doesn't exist.");
+			throw new OrganizationNotFoundException(org_mobile);
+		}
+		logger.info("[getActivitiesByOrganizationWithPaging] organization: " + org_mobile + "get activities.");
+		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize,s);
+		return activityRepository.findByOrganization(pageable).getContent();
 	}
 	
 	public ResponseResult addOrganizationActivity(String org_mobile, Activity postclass){
@@ -147,10 +176,30 @@ public class ActivityService {
 		return user.getEnrollactivities();
 	}
 	
+//	TODO check if it works right
+	public List<Activity> getUserEnrollActivitiesWithPaging(String user_mobile, int pageno, int pagesize){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[getUserEnrollActivitiesWithPaging] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		logger.info("[getUserEnrollActivitiesWithPaging] user: " + user_mobile + " get enroll activities");
+		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize,s);
+		return activityRepository.findByEnrolledUser(user, pageable).getContent();
+	}
+	
+	
 	public Set<User> getActivityPaticipators(Long activity_id){
 		Activity activity = activityRepository.findById(activity_id);
 		return activity.getEnrollusers();
 	}
+
+//  TODO
+//	public Set<User> getActivityPaticipatorsWithPaging(Long activity_id){
+//		Activity activity = activityRepository.findById(activity_id);
+//		return activity.getEnrollusers();
+//	}
 	
 	/**
 	 * TODO: check the maximum number of participators for the activity
@@ -297,7 +346,7 @@ public class ActivityService {
 	public Set<Organization> getUserWatchedOrganizations(String user_mobile){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
-			logger.error("[getOrganizationsNameByUser] user: " + user_mobile + "doesn't exist.");
+			logger.error("[getUserWatchedOrganizations] user: " + user_mobile + "doesn't exist.");
 			throw new UserNotFoundException(user_mobile);
 		}
 		return user.getOrganizations();
