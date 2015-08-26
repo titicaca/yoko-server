@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,7 +55,7 @@ public class UserActivityController {
 		return JsonConverterUtil.convertSetToJsonString(activities);		
 	}
 	
-	/**
+	/**d
 	 * Get the activities of one org
 	 * @param principal
 	 * @return
