@@ -186,20 +186,31 @@ public class ActivityService {
 		logger.info("[getUserEnrollActivitiesWithPaging] user: " + user_mobile + " get enroll activities");
 		Sort s=new Sort(Direction.DESC, "createdtime");
 		Pageable pageable = new PageRequest(pageno, pagesize,s);
-		return activityRepository.findByEnrolledUser(user, pageable).getContent();
+		return activityRepository.findByEnrollingUser(user, pageable).getContent();
 	}
 	
 	
 	public Set<User> getActivityPaticipators(Long activity_id){
 		Activity activity = activityRepository.findById(activity_id);
+		if (activity == null){
+			logger.error("[getActivityPaticipators] activity:" + activity_id + "doesn't exist; "  );
+			throw new ActivityNotFoundException(activity_id);
+		}
 		return activity.getEnrollusers();
 	}
 
 //  TODO
-//	public Set<User> getActivityPaticipatorsWithPaging(Long activity_id){
-//		Activity activity = activityRepository.findById(activity_id);
-//		return activity.getEnrollusers();
-//	}
+	public List<User> getActivityPaticipatorsWithPaging(Long activity_id, int pageno, int pagesize){
+		Activity activity = activityRepository.findById(activity_id);
+		if (activity == null){
+			logger.error("[getActivityPaticipatorsWithPaging] activity:" + activity_id + "doesn't exist; "  );
+			throw new ActivityNotFoundException(activity_id);
+		}
+		//TODO how to sort the participators
+//		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize);
+		return userRepository.findByEnrollActivity(activity, pageable).getContent();
+	}
 	
 	/**
 	 * TODO: check the maximum number of participators for the activity
@@ -269,6 +280,18 @@ public class ActivityService {
 		return user.getCollectactivities();
 	}
 	
+	//TODO to be tested
+	public List<Activity> getUserCollectedActivitiesWithPaging(String user_mobile, int pageno, int pagesize){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[getUserCollectedActivitiesWithPaging] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize,s);
+		return activityRepository.findByCollectingUser(user, pageable).getContent();
+	}
+	
 	/**
 	 * get collecting user list of an activity 
 	 * @param activity_id
@@ -281,6 +304,22 @@ public class ActivityService {
 			throw new ActivityNotFoundException(activity_id);
 		}
 		return activity.getCollectusers();
+	}
+	
+	/**
+	 * get collecting user list of an activity with paging
+	 * @param activity_id
+	 * @return
+	 */
+	public List<User> getActivityCollectingUsersWithPaging(Long activity_id, int pageno, int pagesize){
+		Activity activity = activityRepository.findById(activity_id);
+		if (activity == null){
+			logger.error("[getActivityCollectingUsers] activity: " + activity_id + "doesn't exist.");
+			throw new ActivityNotFoundException(activity_id);
+		}
+//		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize);
+		return userRepository.findByCollectActivity(activity, pageable).getContent();
 	}
 	
 	/**
@@ -350,8 +389,19 @@ public class ActivityService {
 			throw new UserNotFoundException(user_mobile);
 		}
 		return user.getOrganizations();
-		
 	}
+	
+	public List<Organization> getUserWatchedOrganizationsWithPaging(String user_mobile, int pageno, int pagesize){
+		User user =userRepository.findByMobile(user_mobile);
+		if (user == null){
+			logger.error("[getUserWatchedOrganizations] user: " + user_mobile + "doesn't exist.");
+			throw new UserNotFoundException(user_mobile);
+		}
+//		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize);
+		return organizationRepository.findByWatchingUser(user, pageable).getContent();
+	}
+	
 	
 	/**
 	 * get organization watching users
@@ -367,6 +417,23 @@ public class ActivityService {
 		return organization.getUsers();
 	}
 	
+	public List<User> getOrganizationWatchingUsersWithPaging(String org_mobile, int pageno, int pagesize){
+		Organization organization = organizationRepository.findByMobile(org_mobile);
+		if (organization == null){
+			logger.error("[getOrganizationWatchingUsers] organization: " + org_mobile + "doesn't exist.");
+			throw new OrganizationNotFoundException(org_mobile);
+		}
+//		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize);
+		return userRepository.findByWatchOrganization(organization, pageable).getContent();
+	}
+	
+	/**
+	 * add a watched organization for a user
+	 * @param user_mobile
+	 * @param organization_id
+	 * @return
+	 */
 	public ResponseResult addUserWatchedOrganization(String user_mobile, Long organization_id){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){

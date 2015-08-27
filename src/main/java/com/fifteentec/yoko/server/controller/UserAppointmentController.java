@@ -1,6 +1,7 @@
 package com.fifteentec.yoko.server.controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,28 @@ public class UserAppointmentController {
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<Appointment> appointments = appointmentService.getUserAllHostAppointments(Account.findMobile(principal.getName()));
 		return JsonConverterUtil.convertSetToJsonString(appointments);	
-	}	
+	}
+	
+	//TODO to be tested
+	@RequestMapping(value="/host/appointments/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String getUserAllHostAppointmentsWithPaging(Principal principal, @PathVariable int pageno, @PathVariable int pagesize){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		List<Appointment> appointments = appointmentService.getUserAllHostAppointmentsWithPaging(Account.findMobile(principal.getName()), pageno, pagesize);
+		return JsonConverterUtil.convertSetToJsonString(appointments);	
+	}
 	
 	@RequestMapping(value="/enroll/appointments",method=RequestMethod.GET)
 	public String getUserAllEnrollAppointments(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<Appointment> appointments = appointmentService.getUserAllEnrollAppointments(Account.findMobile(principal.getName()));
+		return JsonConverterUtil.convertSetToJsonString(appointments);	
+	}
+	
+	//TODO to be tested
+	@RequestMapping(value="/enroll/appointments/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String getUserAllEnrollAppointmentsWithPaging(Principal principal, @PathVariable int pageno, @PathVariable int pagesize){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		List<Appointment> appointments = appointmentService.getUserAllEnrollAppointmentsWithPaging(Account.findMobile(principal.getName()), pageno, pagesize);
 		return JsonConverterUtil.convertSetToJsonString(appointments);	
 	}
 	

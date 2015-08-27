@@ -28,6 +28,9 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
 	public Page<Activity> findByOrganization(Pageable pageable);
 	
 	@Query("SELECT a FROM Activity a INNER JOIN a.enrollusers u WHERE u = :user")
-	public Page<Activity> findByEnrolledUser(@Param("user") User user, Pageable pageable);
+	public Page<Activity> findByEnrollingUser(@Param("user") User user, Pageable pageable);
+	
+	@Query("SELECT a FROM Activity a INNER JOIN a.collectusers u WHERE u = :user")
+	public Page<Activity> findByCollectingUser(@Param("user") User user, Pageable pageable);
 	
 }

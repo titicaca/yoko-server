@@ -74,15 +74,15 @@ public class UserActivityController {
 	 * @param principal
 	 * @return
 	 */
-	@RequestMapping(value="/enroll/activities",method=RequestMethod.GET)
-	public String getUserEnrollActivities(Principal principal, @PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
+	@RequestMapping(value="/enroll/activities/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String getUserEnrollActivitiesWithPaging(Principal principal, @PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		List<Activity> activities = activityService.getUserEnrollActivitiesWithPaging(Account.findMobile(principal.getName()), pageno, pagesize);
 		return JsonConverterUtil.convertSetToJsonString(activities);
 	}
 	
 	
-	@RequestMapping(value="/enroll/activities/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	@RequestMapping(value="/enroll/activities",method=RequestMethod.GET)
 	public String getUserEnrollActivities(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<Activity> activities = activityService.getUserEnrollActivities(Account.findMobile(principal.getName()));
@@ -112,6 +112,14 @@ public class UserActivityController {
 		return JsonConverterUtil.convertSetToJsonString(users);
 	}
 	
+	//TODO check if it works right
+	@RequestMapping(value="/{activity_id}/participators/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String getUserByActivityWithPaging(@PathVariable("activity_id") Long activity_id,
+			@PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
+		List<User> users = activityService.getActivityPaticipatorsWithPaging(activity_id, pageno, pagesize);
+		return JsonConverterUtil.convertSetToJsonString(users);
+	}
+	
 	
 	@RequestMapping(value="/enroll/{activity_id}",method=RequestMethod.DELETE)
 	public ResponseResult delUserEnrollActivity(Principal principal , @PathVariable("activity_id") Long activity_id){
@@ -126,10 +134,27 @@ public class UserActivityController {
 		return JsonConverterUtil.convertSetToJsonString(activities);
 	}
 	
+	//TODO to be tested
+	@RequestMapping(value="/collect/activities/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String getUserCollectedActivities(Principal principal, @PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		List<Activity> activities = activityService.getUserCollectedActivitiesWithPaging(Account.findMobile(principal.getName()), pageno, pagesize);
+		return JsonConverterUtil.convertSetToJsonString(activities);
+	}
+	
 	@RequestMapping(value="/collect/{activity_id}/users",method=RequestMethod.GET)
 	public String getActivityCollectingUsers(Principal principal, @PathVariable("activity_id") Long activity_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<User> users = activityService.getActivityCollectingUsers(activity_id);
+		return JsonConverterUtil.convertSetToJsonString(users);
+	}
+	
+	//TODO to be tested
+	@RequestMapping(value="/collect/{activity_id}/users/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String getActivityCollectingUsers(Principal principal, @PathVariable("activity_id") Long activity_id,
+			@PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		List<User> users = activityService.getActivityCollectingUsersWithPaging(activity_id, pageno, pagesize);
 		return JsonConverterUtil.convertSetToJsonString(users);
 	}
 	
@@ -152,6 +177,13 @@ public class UserActivityController {
 		return JsonConverterUtil.convertSetToJsonString(orgs);
 	}
 	
+	@RequestMapping(value="/watch/orgs/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	public String getUserWatchedOrganizationsWithPaging(Principal principal, @PathVariable int pageno, @PathVariable int pagesize){
+		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
+		List<Organization> orgs = activityService.getUserWatchedOrganizationsWithPaging(Account.findMobile(principal.getName()), pageno, pagesize);
+		return JsonConverterUtil.convertSetToJsonString(orgs);
+	}
+	
 	@RequestMapping(value="/watch/{organization_id}",method=RequestMethod.POST)
 	public ResponseResult addUserWatchedOrganization(Principal principal ,@PathVariable("organization_id") Long organization_id){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
@@ -165,7 +197,7 @@ public class UserActivityController {
 	}
 	
 	@RequestMapping(value="/search/{organization_name}/page/{pageno}/{pagesize}",method=RequestMethod.GET)
-	public String delUserWatchedOrganization(Principal principal ,@PathVariable("organization_name") String organization_name,
+	public String searchOrganizationWithPaging(Principal principal ,@PathVariable("organization_name") String organization_name,
 			@PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		List<Organization> orgs = activityService.searchOrganizationWithPaging(organization_name, pageno, pagesize);

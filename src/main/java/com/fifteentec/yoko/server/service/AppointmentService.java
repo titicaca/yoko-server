@@ -2,11 +2,18 @@ package com.fifteentec.yoko.server.service;
 
 
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.fifteentec.yoko.server.exception.AppointmentNotFoundException;
@@ -40,6 +47,18 @@ public class AppointmentService {
 			throw new UserNotFoundException(user_mobile);
 		}
 		return user.getAppointments();
+	}
+	
+	//TODO to be tested
+	public List<Appointment> getUserAllHostAppointmentsWithPaging(String user_mobile, int pageno, int pagesize){
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[getUserAllHostAppointments] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize, s);
+		return appointmentRepository.findByUser(user, pageable).getContent();
 	}
 	
 	public Appointment getHostAppointment(String user_mobile, Long appointment_id){
@@ -99,6 +118,24 @@ public class AppointmentService {
 			throw new UserNotFoundException(user_mobile);
 		}
 		Set<Appointment> appointments= user.findAppointmentsByUserAppointmentRelations();
+		logger.info("[getUserAllEnrollAppointments] user:" + user_mobile +  " get enroll appointments");
+		return appointments;
+	}
+	
+	//TODO to be tested
+	public List<Appointment> getUserAllEnrollAppointmentsWithPaging(String user_mobile, int pageno, int pagesize){
+		User user =userRepository.findByMobile(user_mobile);
+		if(user == null){
+			logger.error("[getUserAllEnrollAppointments] user:" + user_mobile + "doesn't exist; "  );
+			throw new UserNotFoundException(user_mobile);
+		}
+		Sort s=new Sort(Direction.DESC, "createdtime");
+		Pageable pageable = new PageRequest(pageno, pagesize,s);
+		List<UserAppointmentRelation> relations = userAppointmentRelationRepository.findByUser(user, pageable).getContent();
+		List<Appointment> appointments= new ArrayList<Appointment>();
+		for (UserAppointmentRelation r : relations){
+			appointments.add(r.getAppointment());
+		}
 		logger.info("[getUserAllEnrollAppointments] user:" + user_mobile +  " get enroll appointments");
 		return appointments;
 	}

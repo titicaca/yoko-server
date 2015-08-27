@@ -5,9 +5,12 @@ import java.util.Set;
 import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.fifteentec.yoko.server.model.User;
 import com.fifteentec.yoko.server.model.UserAppointmentRelation;
 
 @Repository
@@ -17,6 +20,7 @@ public interface UserAppointmentRelationRepository extends JpaRepository<UserApp
 	
 	public UserAppointmentRelation findByUser_idAndAppointment_id(Long user_id,Long appointment_id);
 	public Set<UserAppointmentRelation> findByUser_id(Long user_id);
+	public Page<UserAppointmentRelation> findByUser(User user, Pageable pageble);
 	
 	
 }
