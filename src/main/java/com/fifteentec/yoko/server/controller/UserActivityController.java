@@ -74,7 +74,7 @@ public class UserActivityController {
 	 * @param principal
 	 * @return
 	 */
-	@RequestMapping(value="/enroll/activities",method=RequestMethod.GET)
+	@RequestMapping(value="/enroll/activities/page/{pageno}/{pagesize}",method=RequestMethod.GET)
 	public String getUserEnrollActivities(Principal principal, @PathVariable("pageno") int pageno, @PathVariable("pagesize") int pagesize){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		List<Activity> activities = activityService.getUserEnrollActivitiesWithPaging(Account.findMobile(principal.getName()), pageno, pagesize);
@@ -82,7 +82,7 @@ public class UserActivityController {
 	}
 	
 	
-	@RequestMapping(value="/enroll/activities/page/{pageno}/{pagesize}",method=RequestMethod.GET)
+	@RequestMapping(value="/enroll/activities",method=RequestMethod.GET)
 	public String getUserEnrollActivities(Principal principal){
 		if(!Account.findRole(principal.getName()).equals("0")) throw new PermissionErrorException();
 		Set<Activity> activities = activityService.getUserEnrollActivities(Account.findMobile(principal.getName()));
