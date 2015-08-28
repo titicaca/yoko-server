@@ -54,8 +54,8 @@ if __name__ == "__main__":
 	#host="http://127.0.0.1:8080"
 	#hostssl="https://10.1.1.216:12345"
 
-	#host="http://139.196.16.75:8080"
-	host = "http://127.0.0.1:8080"
+	host="http://139.196.16.75:8080"
+	#host = "http://127.0.0.1:8080"
 
 	print "Get Homepage"
 	url= host+"/home"
