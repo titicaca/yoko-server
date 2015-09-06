@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.fifteentec.yoko.server.model.Organization;
@@ -24,6 +25,6 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	public Page<Organization> findByNameLike(String name, Pageable page);
 	
 	@Query("SELECT organization from Organization organization INNER JOIN organization.users u WHERE u = :user")
-	public Page<Organization> findByWatchingUser(User user, Pageable page);
+	public Page<Organization> findByWatchingUser(@Param("user") User user, Pageable page);
 	
 }

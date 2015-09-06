@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -54,10 +55,11 @@ public class OAuth2Configuration {
         public void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
             		.antMatchers("/signup/**","/about", "/home").permitAll()
+            		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 //                    .antMatchers("/users").hasRole("ADMIN")
 //                    .antMatchers("/review").authenticated()
 //                    .antMatchers("/logreview").authenticated()
-                    .antMatchers("/oauth/token").authenticated()
+                  //  .antMatchers("/oauth/token").authenticated()
                     .anyRequest().authenticated()
                   //  .and()
                  //   .csrf()
