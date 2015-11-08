@@ -162,7 +162,7 @@ public class ActivityService {
 			return new ResponseResult(false, e.toString());
 		}
 		logger.info("[addActivity] organization: " + org_mobile + "post activity " + postclass.getName());
-		String msg = String.format("{\"postid\" : %s｝", activity.getId());
+		String msg = String.format("{postid : %s｝", activity.getId());
 		return new ResponseResult(true, msg);	
 	}
 	
