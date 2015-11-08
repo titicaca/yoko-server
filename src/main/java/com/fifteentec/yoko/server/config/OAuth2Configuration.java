@@ -67,7 +67,7 @@ public class OAuth2Configuration {
                  //   .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
                     ;
             }
-d
+
             private Filter csrfHeaderFilter() {
                 return new OncePerRequestFilter() {
 
