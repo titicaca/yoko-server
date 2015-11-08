@@ -54,7 +54,8 @@ public class OAuth2Configuration {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
-            		.antMatchers("/signup/**","/about", "/home" , "／public/activity/**").permitAll()
+            		.antMatchers("/signup/**","/about", "/home").permitAll()
+            		.antMatchers(HttpMethod.GET, "／public/activity/**").permitAll()
             		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 //                    .antMatchers("/users").hasRole("ADMIN")
 //                    .antMatchers("/review").authenticated()

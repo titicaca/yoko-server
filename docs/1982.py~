@@ -55,11 +55,12 @@ if __name__ == "__main__":
 	#hostssl="https://10.1.1.216:12345"
 
 	host="http://139.196.16.75:8080"
+	#host = "http://127.0.0.1:8080"
 
 	print "Get Homepage"
 	url= host+"/home"
 	resp = http_nosecurity(url,"","PUT")
-
+'''
 	print "Post organization"
 	url=host+"/signup/organization"
 	values ={"name":"LIGANG","role_mobile":"1_1233321","password":"ooo"}
@@ -390,6 +391,10 @@ if __name__ == "__main__":
 	print "Get Page activity"
 	url=host+"/user/myactivity/activities/page/0/4"
 	resp = http_security(url,"","GET")
+	'''
+	print "Get public activity"
+	url=host + "/public/activity/20"
+	resp = http_nosecurity(url, "", "GET")
 
 
 
