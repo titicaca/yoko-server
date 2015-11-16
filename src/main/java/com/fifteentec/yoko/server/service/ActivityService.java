@@ -166,6 +166,31 @@ public class ActivityService {
 		return new ResponseResult(true, msg);	
 	}
 	
+
+	public ResponseResult delOrganizationActivity(String org_mobile, Long activity_id) {
+		Organization organization = organizationRepository.findByMobile(org_mobile);
+		if (organization == null){
+			logger.error("[addActivity] organization: " + org_mobile + "doesn't exist.");
+			throw new OrganizationNotFoundException(org_mobile);
+		}
+		
+		Activity a = activityRepository.findById(activity_id);
+		if (a == null){
+			logger.error("[delOrganizationActivity] activity:" + activity_id + "doesn't exist; "  );
+			throw new ActivityNotFoundException(activity_id);
+		}else{
+			logger.info("[delOrganizationActivity] delete activity:" + activity_id );
+			try{
+				activityRepository.delete(a);
+				return new ResponseResult(true, "");			
+			}catch(Exception e){
+				logger.error("[delOrganizationActivity] internal errors in delOrganizationActivity");
+				return new ResponseResult(false, "");
+			}
+		}
+		
+	}
+	
 	public Set<Activity> getUserEnrollActivities(String user_mobile){
 		User user =userRepository.findByMobile(user_mobile);
 		if (user == null){
@@ -475,5 +500,6 @@ public class ActivityService {
 		}
 		return new ResponseResult(true);	
 	}
+
 	
 }

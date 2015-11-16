@@ -65,6 +65,9 @@ public class Activity extends BaseModel{
 	@Column(name="status",columnDefinition = "INT default 0")
 	private int status;	
 	
+	@Column(name="type", columnDefinition = "INT default 0")
+	private int type;
+	
 	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="organization_id")
 	@JsonIgnore

@@ -86,6 +86,15 @@ public class OrganizationActivityController {
 		return activityService.addOrganizationActivity(Account.findMobile(principal.getName()), postclass);
 	}
 	
+	@RequestMapping(value="/host/{activity_id}", method=RequestMethod.DELETE)
+	public ResponseResult deleteActivity(Principal principal, @PathVariable("activity_id") Long activity_id){
+		if(!Account.findRole(principal.getName()).equals("1")) {
+			logger.error("[deleteActivity] org: "+ principal.getName() + " permission denied");
+			throw new PermissionErrorException();
+		}
+		return activityService.delOrganizationActivity(Account.findMobile(principal.getName()), activity_id);
+	}
+	
 
 	@RequestMapping(value="/collect/{activity_id}/users",method=RequestMethod.GET)
 	public String getActivityCollectingUsers(Principal principal, @PathVariable("activity_id") Long activity_id){
