@@ -39,6 +39,26 @@ public class Activity extends BaseModel{
 	@Column(name="timeend")
 	private Date timeend;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="datebegin")
+	private Date datebegin;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="dateend")
+	private Date dateend;
+	
+	@Column(name="reminders")
+	private int reminders;
+	
+	@Column(name="repeattype")
+	private long repeattype;
+	
+	@Column(name="repeatsubtype")
+	private long repeatsubtype;
+	
+	@Column(name="repeatid")
+	private long repeatid;
+	
 	@Column(name="location")
 	private String location;
 	
@@ -66,7 +86,7 @@ public class Activity extends BaseModel{
 	private int status;	
 	
 	@Column(name="type", columnDefinition = "INT default 0")
-	private int type;
+	private long type;
 	
 	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 	@JoinColumn(name="organization_id")
